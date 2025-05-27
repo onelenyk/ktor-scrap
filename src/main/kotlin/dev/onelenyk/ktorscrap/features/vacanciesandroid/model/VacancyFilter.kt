@@ -3,7 +3,12 @@ package dev.onelenyk.ktorscrap.features.vacanciesandroid.model
 object VacancyFilter {
     private val relevantKeywords =
         listOf(
-            "mobile", "android", "ios", "flutter", "kotlin", "swift",
+            "mobile",
+            "android",
+            "ios",
+            "flutter",
+            "kotlin",
+            "swift",
         )
 
     fun isRelevant(vacancy: Vacancy): Boolean {

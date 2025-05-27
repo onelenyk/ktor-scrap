@@ -11,7 +11,6 @@ import dev.onelenyk.ktorscrap.features.vacanciesandroid.processor.JobProcessor
 import dev.onelenyk.ktorscrap.features.vacanciesandroid.processor.JobQueueManager
 import dev.onelenyk.ktorscrap.features.vacanciesandroid.repository.ScrapingJobRepository
 import dev.onelenyk.ktorscrap.features.vacanciesandroid.repository.ScrapingJobRepositoryImpl
-import dev.onelenyk.ktorscrap.features.vacanciesandroid.repository.model.ScrapingJob
 import dev.onelenyk.ktorscrap.features.vacanciesandroid.scraper.AmoScraper
 import dev.onelenyk.ktorscrap.features.vacanciesandroid.scraper.BreezyScraper
 import dev.onelenyk.ktorscrap.features.vacanciesandroid.scraper.DjinniScraper

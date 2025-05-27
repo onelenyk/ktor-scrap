@@ -1,9 +1,9 @@
 package dev.onelenyk.ktorscrap.features.vacanciesandroid.scraper
 
 import dev.onelenyk.ktorscrap.features.vacanciesandroid.model.Logger
+import dev.onelenyk.ktorscrap.features.vacanciesandroid.model.ScrapeOutput
 import dev.onelenyk.ktorscrap.features.vacanciesandroid.model.ScrapeTarget
 import dev.onelenyk.ktorscrap.features.vacanciesandroid.model.Vacancy
-import dev.onelenyk.ktorscrap.features.vacanciesandroid.model.ScrapeOutput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup

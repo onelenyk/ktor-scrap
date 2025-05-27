@@ -54,9 +54,10 @@ class JobProcessor(
 
         try {
             while (true) {
-                val job = mutex.withLock {
-                    jobQueue.poll()
-                } ?: break
+                val job =
+                    mutex.withLock {
+                        jobQueue.poll()
+                    } ?: break
 
                 try {
                     processJob(job)
@@ -76,9 +77,10 @@ class JobProcessor(
         jobOutputManager.startProcessing(job.id)
 
         // Process the job using ScraperManager
-        val result = withContext(Dispatchers.IO) {
-            scraperManager.scrape(job.source)
-        }
+        val result =
+            withContext(Dispatchers.IO) {
+                scraperManager.scrape(job.source)
+            }
 
         // Update job with results
         jobOutputManager.completeJob(job.id, result)

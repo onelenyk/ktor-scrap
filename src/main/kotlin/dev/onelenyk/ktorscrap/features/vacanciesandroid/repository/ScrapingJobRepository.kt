@@ -12,16 +12,22 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import org.bson.Document
-import org.bson.types.ObjectId
 import java.time.Instant
 import java.util.UUID
 
 interface ScrapingJobRepository {
     suspend fun create(job: ScrapingJob): ScrapingJob
+
     suspend fun getById(id: UUID): ScrapingJob?
+
     suspend fun delete(id: UUID): Boolean
+
     suspend fun readAll(): List<ScrapingJob>
-    suspend fun update(id: UUID, document: Document): ScrapingJob?
+
+    suspend fun update(
+        id: UUID,
+        document: Document,
+    ): ScrapingJob?
 
     suspend fun createJob(source: ScrapeTarget): ScrapingJob
 
@@ -29,17 +35,18 @@ interface ScrapingJobRepository {
         jobId: UUID,
         status: JobStatus,
         result: ScrapingResult? = null,
-        error: String? = null
+        error: String? = null,
     ): ScrapingJob?
 }
 
 class ScrapingJobRepositoryImpl(
-    private val mongoDBManager: MongoDBManager
+    private val mongoDBManager: MongoDBManager,
 ) : ScrapingJobRepository {
-    private val collection: MongoCollection<ScrapingJob> = mongoDBManager.getCollection(
-        "scraping_jobs",
-        ScrapingJob::class.java
-    )
+    private val collection: MongoCollection<ScrapingJob> =
+        mongoDBManager.getCollection(
+            "scraping_jobs",
+            ScrapingJob::class.java,
+        )
 
     override suspend fun create(job: ScrapingJob): ScrapingJob {
         val insertOne = collection.insertOne(job)
@@ -62,7 +69,10 @@ class ScrapingJobRepositoryImpl(
         return collection.find().toList()
     }
 
-    override suspend fun update(id: UUID, document: Document): ScrapingJob? {
+    override suspend fun update(
+        id: UUID,
+        document: Document,
+    ): ScrapingJob? {
         val filter = Filters.eq("_id", id)
         collection.updateOne(filter, document, UpdateOptions().upsert(true))
         return getById(id)
@@ -78,14 +88,15 @@ class ScrapingJobRepositoryImpl(
         jobId: UUID,
         status: JobStatus,
         result: ScrapingResult?,
-        error: String?
+        error: String?,
     ): ScrapingJob? {
-        val update = Document().apply {
-            put("status", status.name)
-            put("updatedAt", Instant.now().epochSecond)
-            if (result != null) put("result", result)
-            if (error != null) put("error", error)
-        }
+        val update =
+            Document().apply {
+                put("status", status.name)
+                put("updatedAt", Instant.now().epochSecond)
+                if (result != null) put("result", result)
+                if (error != null) put("error", error)
+            }
         return update(jobId, Document("\$set", update))
     }
 } 

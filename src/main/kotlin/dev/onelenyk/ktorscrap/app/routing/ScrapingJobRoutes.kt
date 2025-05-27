@@ -16,7 +16,7 @@ import java.util.UUID
 
 fun Route.scrapingJobRoutes(
     repository: ScrapingJobRepository,
-    jobQueueManager: JobQueueManager
+    jobQueueManager: JobQueueManager,
 ) {
     route("/api/jobs") {
         // Get all jobs
@@ -27,7 +27,7 @@ fun Route.scrapingJobRoutes(
             } catch (e: Exception) {
                 call.respond(
                     HttpStatusCode.InternalServerError,
-                    mapOf("error" to (e.message ?: "Unknown error occurred"))
+                    mapOf("error" to (e.message ?: "Unknown error occurred")),
                 )
             }
         }
@@ -35,10 +35,11 @@ fun Route.scrapingJobRoutes(
         // Get job by ID
         get("{id}") {
             try {
-                val id = call.parameters["id"] ?: return@get call.respond(
-                    HttpStatusCode.BadRequest,
-                    mapOf("error" to "Missing job ID")
-                )
+                val id =
+                    call.parameters["id"] ?: return@get call.respond(
+                        HttpStatusCode.BadRequest,
+                        mapOf("error" to "Missing job ID"),
+                    )
 
                 val job = repository.getById(UUID.fromString(id))
                 if (job != null) {
@@ -49,7 +50,7 @@ fun Route.scrapingJobRoutes(
             } catch (e: Exception) {
                 call.respond(
                     HttpStatusCode.InternalServerError,
-                    mapOf("error" to (e.message ?: "Unknown error occurred"))
+                    mapOf("error" to (e.message ?: "Unknown error occurred")),
                 )
             }
         }
@@ -63,7 +64,7 @@ fun Route.scrapingJobRoutes(
             } catch (e: Exception) {
                 call.respond(
                     HttpStatusCode.InternalServerError,
-                    mapOf("error" to (e.message ?: "Unknown error occurred"))
+                    mapOf("error" to (e.message ?: "Unknown error occurred")),
                 )
             }
         }
@@ -71,10 +72,11 @@ fun Route.scrapingJobRoutes(
         // Delete job
         delete("{id}") {
             try {
-                val id = call.parameters["id"] ?: return@delete call.respond(
-                    HttpStatusCode.BadRequest,
-                    mapOf("error" to "Missing job ID")
-                )
+                val id =
+                    call.parameters["id"] ?: return@delete call.respond(
+                        HttpStatusCode.BadRequest,
+                        mapOf("error" to "Missing job ID"),
+                    )
 
                 val success = repository.delete(UUID.fromString(id))
                 if (success) {
@@ -85,7 +87,7 @@ fun Route.scrapingJobRoutes(
             } catch (e: Exception) {
                 call.respond(
                     HttpStatusCode.InternalServerError,
-                    mapOf("error" to (e.message ?: "Unknown error occurred"))
+                    mapOf("error" to (e.message ?: "Unknown error occurred")),
                 )
             }
         }

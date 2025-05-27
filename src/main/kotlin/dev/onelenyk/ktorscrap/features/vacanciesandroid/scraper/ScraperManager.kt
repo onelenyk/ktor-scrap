@@ -11,7 +11,7 @@ class ScraperManager(
     private val novaDigitalScraper: NovaDigitalScraper,
     private val breezyScraper: BreezyScraper,
     private val leverScraper: LeverScraper,
-    private val logger: Logger
+    private val logger: Logger,
 ) {
     suspend fun scrape(target: ScrapeTarget): ScrapeOutput {
         val scraper = selectScraper(target.url)

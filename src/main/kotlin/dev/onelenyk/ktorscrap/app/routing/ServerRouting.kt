@@ -7,7 +7,7 @@ import io.ktor.server.routing.Routing
 
 class ServerRouting(
     val repository: ScrapingJobRepository,
-    val jobQueueManager: JobQueueManager
+    val jobQueueManager: JobQueueManager,
 ) {
     private val utilRoutes = UtilRoutes()
 
