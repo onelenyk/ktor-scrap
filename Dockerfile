@@ -1,22 +1,14 @@
-# Build stage
-FROM gradle:8.2-jdk21 AS build
-WORKDIR /app
-COPY . .
-RUN gradle buildFatJar --no-daemon
+# Use OpenJDK 17 runtime image
+FROM openjdk:17-jre-slim
 
-# Run stage
-FROM eclipse-temurin:21-jre-alpine
+# Set working directory
 WORKDIR /app
 
-# Copy the built jar from the build stage
-COPY --from=build /app/build/libs/fat.jar /app/app.jar
+# Copy the pre-built JAR file (Render builds this for you)
+COPY build/libs/fat.jar app.jar
 
-# Create a non-root user
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
+# Expose the port (Render expects your app to bind to $PORT)
+EXPOSE $PORT
 
-# Expose the port the app runs on
-EXPOSE 8080
-
-# Command to run the application
-ENTRYPOINT ["java", "-jar", "app.jar"] 
+# Run the application
+CMD ["java", "-jar", "app.jar"]

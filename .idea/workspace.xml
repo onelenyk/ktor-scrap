@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68371057-438e-49e3-a253-dcec33f98a15" name="Changes" comment="Refactor: Centralize vacancy filtering in ScrapeOutput&#10;&#10;This commit introduces a static factory method `ScrapeOutput.withFiltering` to centralize the logic for filtering vacancies based on `target.needsFiltering`.&#10;&#10;All scrapers (`AmoScraper`, `BreezyScraper`, `DjinniScraper`, `DouScraper`, `LeverScraper`, `NovaDigitalScraper`, `SampleScraper`) have been updated to use this new method, removing redundant filtering logic from each scraper.&#10;&#10;Additionally, trailing whitespace has been removed from several files for consistency.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="68371057-438e-49e3-a253-dcec33f98a15" name="Changes" comment="feat: Add Dockerfile and .dockerignore&#10;&#10;This commit introduces a Dockerfile for building and running the application in a container.&#10;&#10;- The Dockerfile uses a multi-stage build:&#10;    - Stage 1: `gradle:8.2-jdk21` for building the fat JAR.&#10;    - Stage 2: `eclipse-temurin:21-jre-alpine` for running the application.&#10;- Creates a non-root user `appuser` for running the application.&#10;- Exposes port 8080.&#10;- Sets the entrypoint to run the `app.jar`.&#10;&#10;A `.dockerignore` file is also added to exclude unnecessary files and directories from the Docker build context.">
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,7 +189,6 @@
     <option name="myCommands">
       <command value="gradle app:tasks" />
       <command value="gradle runFatJar" />
-      <command value="gradle buildFatJar" />
       <command value="gradle assemble" />
       <command value="gradle test" />
       <command value="gradle :clean" />
@@ -197,6 +196,7 @@
       <command value="gradle ktlintFormat" />
       <command value="gradle installDist" />
       <command value="gradle build" />
+      <command value="gradle buildFatJar" />
     </option>
   </component>
   <component name="RunManager" selected="Gradle.ktor-scrap [buildFatJar]">
@@ -466,7 +466,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748403794489</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="feat: Add Dockerfile and .dockerignore&#10;&#10;This commit introduces a Dockerfile for building and running the application in a container.&#10;&#10;- The Dockerfile uses a multi-stage build:&#10;    - Stage 1: `gradle:8.2-jdk21` for building the fat JAR.&#10;    - Stage 2: `eclipse-temurin:21-jre-alpine` for running the application.&#10;- Creates a non-root user `appuser` for running the application.&#10;- Exposes port 8080.&#10;- Sets the entrypoint to run the `app.jar`.&#10;&#10;A `.dockerignore` file is also added to exclude unnecessary files and directories from the Docker build context.">
+      <option name="closed" value="true" />
+      <created>1748404050352</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1748404050352</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -506,7 +514,8 @@
     <MESSAGE value="Add Dou.ua scraper and integrate into vacancy scraper&#10;&#10;This commit introduces a new scraper for Dou.ua and integrates it into the existing Android vacancy scraper.&#10;&#10;- Added `DouScraper.kt` to handle scraping job listings from Dou.ua.&#10;- Updated `Main.kt` to include DouScraper for several companies (Promova, BetterMe, AMO, Boosta).&#10;- Temporarily commented out DjinniScraper for focused testing.&#10;- Includes logging for scraping stages and individual job parsing." />
     <MESSAGE value="Refactor: Apply consistent formatting and import order&#10;&#10;This commit standardizes code formatting and import statement order across multiple files. Changes include:&#10;&#10;- Consistent trailing commas in constructor parameters and argument lists.&#10;- Standardized import order (e.g., `ScrapeOutput` before `ScrapeTarget`).&#10;- Removal of redundant newlines and spacing.&#10;&#10;These changes primarily affect files within the `features.vacanciesandroid` package and `app.routing` / `app.di`. No functional changes are introduced." />
     <MESSAGE value="Refactor: Centralize vacancy filtering in ScrapeOutput&#10;&#10;This commit introduces a static factory method `ScrapeOutput.withFiltering` to centralize the logic for filtering vacancies based on `target.needsFiltering`.&#10;&#10;All scrapers (`AmoScraper`, `BreezyScraper`, `DjinniScraper`, `DouScraper`, `LeverScraper`, `NovaDigitalScraper`, `SampleScraper`) have been updated to use this new method, removing redundant filtering logic from each scraper.&#10;&#10;Additionally, trailing whitespace has been removed from several files for consistency." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor: Centralize vacancy filtering in ScrapeOutput&#10;&#10;This commit introduces a static factory method `ScrapeOutput.withFiltering` to centralize the logic for filtering vacancies based on `target.needsFiltering`.&#10;&#10;All scrapers (`AmoScraper`, `BreezyScraper`, `DjinniScraper`, `DouScraper`, `LeverScraper`, `NovaDigitalScraper`, `SampleScraper`) have been updated to use this new method, removing redundant filtering logic from each scraper.&#10;&#10;Additionally, trailing whitespace has been removed from several files for consistency." />
+    <MESSAGE value="feat: Add Dockerfile and .dockerignore&#10;&#10;This commit introduces a Dockerfile for building and running the application in a container.&#10;&#10;- The Dockerfile uses a multi-stage build:&#10;    - Stage 1: `gradle:8.2-jdk21` for building the fat JAR.&#10;    - Stage 2: `eclipse-temurin:21-jre-alpine` for running the application.&#10;- Creates a non-root user `appuser` for running the application.&#10;- Exposes port 8080.&#10;- Sets the entrypoint to run the `app.jar`.&#10;&#10;A `.dockerignore` file is also added to exclude unnecessary files and directories from the Docker build context." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: Add Dockerfile and .dockerignore&#10;&#10;This commit introduces a Dockerfile for building and running the application in a container.&#10;&#10;- The Dockerfile uses a multi-stage build:&#10;    - Stage 1: `gradle:8.2-jdk21` for building the fat JAR.&#10;    - Stage 2: `eclipse-temurin:21-jre-alpine` for running the application.&#10;- Creates a non-root user `appuser` for running the application.&#10;- Exposes port 8080.&#10;- Sets the entrypoint to run the `app.jar`.&#10;&#10;A `.dockerignore` file is also added to exclude unnecessary files and directories from the Docker build context." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
