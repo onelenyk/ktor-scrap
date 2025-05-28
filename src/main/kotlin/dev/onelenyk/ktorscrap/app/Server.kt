@@ -1,9 +1,8 @@
 package dev.onelenyk.ktorscrap.app
 
 import dev.onelenyk.ktorscrap.app.di.koinModule
-import dev.onelenyk.ktorscrap.app.di.provideServerPort
+import dev.onelenyk.ktorscrap.app.env.EnvironmentManager
 import dev.onelenyk.ktorscrap.app.routing.ServerRouting
-import io.github.cdimascio.dotenv.dotenv
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -26,7 +25,8 @@ class Server {
 
     fun start(): NettyApplicationEngine {
         log.config { "Starting Ktor server initialization..." }
-        val port = System.getenv("PORT")?.toInt() ?: provideServerPort(dotenv = dotenv()) ?: 8080
+        
+        val port = EnvironmentManager.getPort()
         log.info { "Configuring server on port: $port" }
 
         val ip = InetAddress.getLocalHost().hostAddress

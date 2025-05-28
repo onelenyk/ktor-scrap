@@ -56,7 +56,6 @@ dependencies {
     implementation("io.insert-koin:koin-ktor:3.4.3")
     implementation("io.insert-koin:koin-logger-slf4j:3.4.3")
 
-    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
     // Firebase Admin SDK
     implementation("com.google.firebase:firebase-admin:9.2.0")
     // Logging

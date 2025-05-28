@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: ktor-scrap
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_CONNECTION=${DB_CONNECTION}
+    env_file:
+      - .env
+    restart: unless-stopped 
