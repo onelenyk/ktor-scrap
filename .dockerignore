@@ -1,0 +1,13 @@
+.git
+.gitignore
+.gradle
+.idea
+build
+!build/libs/*.jar
+*.iml
+*.iws
+*.ipr
+.env
+admin_key.json
+local.properties
+.DS_Store 
