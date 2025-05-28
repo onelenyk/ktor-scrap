@@ -30,7 +30,7 @@ class SampleScraper : JobScraper {
                 ),
             )
         logger.info("SampleScraper produced ${vacancies.size} vacancies.")
-        return ScrapeOutput(
+        return ScrapeOutput.withFiltering(
             source = target.name,
             vacancies = vacancies,
             target = target,

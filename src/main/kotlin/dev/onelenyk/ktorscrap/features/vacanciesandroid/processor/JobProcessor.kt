@@ -89,4 +89,4 @@ class JobProcessor(
     fun getQueueSize(): Int = jobQueue.size
 
     fun isCurrentlyProcessing(): Boolean = isProcessing.get()
-} 
+}

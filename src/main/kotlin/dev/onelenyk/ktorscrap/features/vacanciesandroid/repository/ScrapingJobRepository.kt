@@ -99,4 +99,4 @@ class ScrapingJobRepositoryImpl(
             }
         return update(jobId, Document("\$set", update))
     }
-} 
+}

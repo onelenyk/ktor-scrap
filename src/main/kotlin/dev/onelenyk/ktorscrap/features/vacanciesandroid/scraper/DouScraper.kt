@@ -44,7 +44,7 @@ class DouScraper : JobScraper {
             logger.error("Error scraping DOU: ${e.message}", e)
         }
         logger.stage("DouScraper", "Completed scraping. Total jobs found: ${jobs.size}")
-        return ScrapeOutput(
+        return ScrapeOutput.withFiltering(
             source = target.name,
             vacancies = jobs,
             target = target,

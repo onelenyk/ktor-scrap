@@ -30,4 +30,4 @@ class ScraperManager(
             else -> throw IllegalArgumentException("No suitable scraper found for URL: $url")
         }
     }
-} 
+}

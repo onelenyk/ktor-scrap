@@ -60,6 +60,6 @@ class NovaDigitalScraper : JobScraper {
             }
         }
         logger.info("[NovaDigital] Successfully parsed ${jobs.size} jobs")
-        return ScrapeOutput(companyName, jobs, target)
+        return ScrapeOutput.withFiltering(companyName, jobs, target)
     }
 }

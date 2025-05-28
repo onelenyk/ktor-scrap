@@ -35,7 +35,7 @@ class AmoScraper : JobScraper {
         val wrapper = doc.selectFirst("div.vacancies-wrapper")
         if (wrapper == null) {
             logger.error("[AMO] No vacancies-wrapper found", null)
-            return ScrapeOutput(companyName, jobs, target)
+            return ScrapeOutput.withFiltering(companyName, jobs, target)
         }
         val departmentBlocks = wrapper.select("div.wrapper")
         logger.info("[AMO] Found ${departmentBlocks.size} department blocks")
@@ -65,6 +65,6 @@ class AmoScraper : JobScraper {
             }
         }
         logger.info("[AMO] Successfully parsed ${jobs.size} jobs")
-        return ScrapeOutput(companyName, jobs, target)
+        return ScrapeOutput.withFiltering(companyName, jobs, target)
     }
 }

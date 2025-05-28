@@ -4,23 +4,16 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68371057-438e-49e3-a253-dcec33f98a15" name="Changes" comment="Add Dou.ua scraper and integrate into vacancy scraper&#10;&#10;This commit introduces a new scraper for Dou.ua and integrates it into the existing Android vacancy scraper.&#10;&#10;- Added `DouScraper.kt` to handle scraping job listings from Dou.ua.&#10;- Updated `Main.kt` to include DouScraper for several companies (Promova, BetterMe, AMO, Boosta).&#10;- Temporarily commented out DjinniScraper for focused testing.&#10;- Includes logging for scraping stages and individual job parsing.">
+    <list default="true" id="68371057-438e-49e3-a253-dcec33f98a15" name="Changes" comment="Refactor: Apply consistent formatting and import order&#10;&#10;This commit standardizes code formatting and import statement order across multiple files. Changes include:&#10;&#10;- Consistent trailing commas in constructor parameters and argument lists.&#10;- Standardized import order (e.g., `ScrapeOutput` before `ScrapeTarget`).&#10;- Removal of redundant newlines and spacing.&#10;&#10;These changes primarily affect files within the `features.vacanciesandroid` package and `app.routing` / `app.di`. No functional changes are introduced.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/di/KoinModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/di/KoinModule.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/routing/ScrapingJobRoutes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/routing/ScrapingJobRoutes.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/routing/ServerRouting.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/routing/ServerRouting.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/model/VacancyFilter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/model/VacancyFilter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/processor/JobOutputManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/processor/JobOutputManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/processor/JobProcessor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/processor/JobProcessor.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/processor/JobQueueManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/processor/JobQueueManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/repository/ScrapingJobRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/repository/ScrapingJobRepository.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/repository/model/ScrapingJob.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/repository/model/ScrapingJob.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/model/ScrapeOutput.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/model/ScrapeOutput.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/AmoScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/AmoScraper.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/BreezyScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/BreezyScraper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/JobScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/JobScraper.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/DjinniScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/DjinniScraper.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/DouScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/DouScraper.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/LeverScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/LeverScraper.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/NovaDigitalScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/NovaDigitalScraper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/ScraperManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/ScraperManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/SampleScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/SampleScraper.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -449,7 +442,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748203149397</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Refactor: Apply consistent formatting and import order&#10;&#10;This commit standardizes code formatting and import statement order across multiple files. Changes include:&#10;&#10;- Consistent trailing commas in constructor parameters and argument lists.&#10;- Standardized import order (e.g., `ScrapeOutput` before `ScrapeTarget`).&#10;- Removal of redundant newlines and spacing.&#10;&#10;These changes primarily affect files within the `features.vacanciesandroid` package and `app.routing` / `app.di`. No functional changes are introduced.">
+      <option name="closed" value="true" />
+      <created>1748381357571</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1748381357571</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -487,7 +488,8 @@
     <MESSAGE value="Refactor route registration in UtilRoutes" />
     <MESSAGE value="Refactor Android vacancy scraper with new models and logger" />
     <MESSAGE value="Add Dou.ua scraper and integrate into vacancy scraper&#10;&#10;This commit introduces a new scraper for Dou.ua and integrates it into the existing Android vacancy scraper.&#10;&#10;- Added `DouScraper.kt` to handle scraping job listings from Dou.ua.&#10;- Updated `Main.kt` to include DouScraper for several companies (Promova, BetterMe, AMO, Boosta).&#10;- Temporarily commented out DjinniScraper for focused testing.&#10;- Includes logging for scraping stages and individual job parsing." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Dou.ua scraper and integrate into vacancy scraper&#10;&#10;This commit introduces a new scraper for Dou.ua and integrates it into the existing Android vacancy scraper.&#10;&#10;- Added `DouScraper.kt` to handle scraping job listings from Dou.ua.&#10;- Updated `Main.kt` to include DouScraper for several companies (Promova, BetterMe, AMO, Boosta).&#10;- Temporarily commented out DjinniScraper for focused testing.&#10;- Includes logging for scraping stages and individual job parsing." />
+    <MESSAGE value="Refactor: Apply consistent formatting and import order&#10;&#10;This commit standardizes code formatting and import statement order across multiple files. Changes include:&#10;&#10;- Consistent trailing commas in constructor parameters and argument lists.&#10;- Standardized import order (e.g., `ScrapeOutput` before `ScrapeTarget`).&#10;- Removal of redundant newlines and spacing.&#10;&#10;These changes primarily affect files within the `features.vacanciesandroid` package and `app.routing` / `app.di`. No functional changes are introduced." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor: Apply consistent formatting and import order&#10;&#10;This commit standardizes code formatting and import statement order across multiple files. Changes include:&#10;&#10;- Consistent trailing commas in constructor parameters and argument lists.&#10;- Standardized import order (e.g., `ScrapeOutput` before `ScrapeTarget`).&#10;- Removal of redundant newlines and spacing.&#10;&#10;These changes primarily affect files within the `features.vacanciesandroid` package and `app.routing` / `app.di`. No functional changes are introduced." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

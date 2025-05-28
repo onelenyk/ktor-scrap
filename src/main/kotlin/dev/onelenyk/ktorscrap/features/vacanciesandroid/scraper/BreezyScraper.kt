@@ -74,6 +74,6 @@ class BreezyScraper : JobScraper {
         }
 
         logger.info("[Breezy] Successfully parsed ${jobs.size} jobs")
-        return ScrapeOutput(companyName, jobs, target)
+        return ScrapeOutput.withFiltering(companyName, jobs, target)
     }
 }

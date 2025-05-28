@@ -66,7 +66,7 @@ class DjinniScraper : JobScraper {
             }
         }
         logger.stage("DjinniScraper", "Completed scraping. Total jobs found: ${jobs.size}")
-        return ScrapeOutput(
+        return ScrapeOutput.withFiltering(
             source = target.name,
             vacancies = jobs,
             target = target,
