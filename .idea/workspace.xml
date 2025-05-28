@@ -4,8 +4,15 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68371057-438e-49e3-a253-dcec33f98a15" name="Changes" comment="feat: Add Dockerfile and .dockerignore&#10;&#10;This commit introduces a Dockerfile for building and running the application in a container.&#10;&#10;- The Dockerfile uses a multi-stage build:&#10;    - Stage 1: `gradle:8.2-jdk21` for building the fat JAR.&#10;    - Stage 2: `eclipse-temurin:21-jre-alpine` for running the application.&#10;- Creates a non-root user `appuser` for running the application.&#10;- Exposes port 8080.&#10;- Sets the entrypoint to run the `app.jar`.&#10;&#10;A `.dockerignore` file is also added to exclude unnecessary files and directories from the Docker build context.">
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+    <list default="true" id="68371057-438e-49e3-a253-dcec33f98a15" name="Changes" comment="Refactor: Simplify Dockerfile for Render deployment&#10;&#10;This commit updates the Dockerfile to align with Render's build and deployment process.&#10;&#10;Key changes:&#10;- Switched from a multi-stage build to a single-stage build using `openjdk:17-jre-slim`. Render handles the JAR building process separately.&#10;- Removed manual JAR copying from a build stage; now directly copies `build/libs/fat.jar`.&#10;- Removed non-root user creation (`appuser`, `appgroup`) as Render handles this.&#10;- Updated port exposure to use `$PORT` environment variable as expected by Render, instead of a hardcoded `8080`.&#10;- Changed `ENTRYPOINT` to `CMD` for running the application.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/Application.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/Server.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/Server.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/env/EnvironmentManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/env/EnvironmentManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/routing/ServerRouting.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/routing/ServerRouting.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/routing/VacancyRoutes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/routing/VacancyRoutes.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,10 +78,13 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Docker.Dockerfile.executor": "Run",
+    "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
     "Downloaded.Files.Path.Enabled": "false",
     "Gradle.ApplicationTest.executor": "Debug",
     "Gradle.Build crudfather.executor": "Run",
     "Gradle.Build ktor-hello.executor": "Run",
+    "Gradle.Build ktor-scrap.executor": "Run",
     "Gradle.DynamicRoutesTest.executor": "Debug",
     "Gradle.DynamicRoutesTest.testCreateDynamicDocument.executor": "Debug",
     "Gradle.DynamicRoutesTest.testCreateDynamicRoutes.executor": "Debug",
@@ -95,6 +105,7 @@
     "Gradle.MyTestClass.executor": "Debug",
     "Gradle.ServerRoutingTesting.executor": "Run",
     "Gradle.ServerRoutingTesting.testCreateModel.executor": "Debug",
+    "Gradle.Upgrade Gradle wrapper.executor": "Run",
     "Gradle.crudfather [:clean].executor": "Run",
     "Gradle.crudfather [app:tasks].executor": "Run",
     "Gradle.crudfather [assembleDist].executor": "Run",
@@ -117,10 +128,12 @@
     "Gradle.ktor-hello [installDist].executor": "Run",
     "Gradle.ktor-hello [ktlintFormat].executor": "Debug",
     "Gradle.ktor-hello [run].executor": "Debug",
+    "Gradle.ktor-scrap [:clean].executor": "Run",
     "Gradle.ktor-scrap [buildFatJar].executor": "Run",
     "Gradle.ktor-scrap [build].executor": "Run",
     "Gradle.ktorhello [run].executor": "Debug",
     "Gradle.ktorhello [test].executor": "Debug",
+    "Gradle.run with env.executor": "Debug",
     "JAR Application.app.jar.executor": "Debug",
     "JAR Application.crudfather-0.0.6-javadoc.jar.executor": "Run",
     "JAR Application.fat.jar.executor": "Debug",
@@ -148,7 +161,7 @@
     "project.structure.last.edited": "Dependencies",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "com.android.studio.ml.bot.mainConfigurable",
+    "settings.editor.selected.configurable": "DockerRegistry",
     "show.migrate.to.gradle.popup": "false"
   }
 }]]></component>
@@ -191,16 +204,16 @@
       <command value="gradle runFatJar" />
       <command value="gradle assemble" />
       <command value="gradle test" />
-      <command value="gradle :clean" />
       <command value="gradle run" />
       <command value="gradle ktlintFormat" />
       <command value="gradle installDist" />
       <command value="gradle build" />
       <command value="gradle buildFatJar" />
+      <command value="gradle :clean" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.ktor-scrap [buildFatJar]">
-    <configuration name="GeneralRoutesTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+  <component name="RunManager" selected="Gradle.run with env">
+    <configuration name="ktor-scrap [:clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -211,31 +224,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;GeneralRoutesTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="ktor-hello [ktlintFormat]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="ktlintFormat" />
+            <option value=":clean" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -268,29 +257,7 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="ktor-scrap [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="ktorhello [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="run with env" type="GradleRunConfiguration" factoryName="Gradle">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -302,6 +269,7 @@
         <option name="taskNames">
           <list>
             <option value="run" />
+            <option value="--args=&quot;--env=PORT==8080 --env=DB_USERNAME==onelenyk --env=DB_PASSWORD==ZvENwF0TzcsirUIC --env=DB_CONNECTION==@cluster0.gmqkpcg.mongodb.net/?retryWrites=true&amp;w=majority&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -312,20 +280,45 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="ApplicationKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="dev.onelenyk.ktorscrap.app.ApplicationKt" />
+      <module name="ktor-scrap.main" />
+      <shortenClasspath name="NONE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker Scrapper">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="sourceFilePath" value="Dockerfile" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="docker-compose.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker Scrapper">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <list>
+      <item itemvalue="Docker.Dockerfile" />
+      <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
+      <item itemvalue="Gradle.run with env" />
+      <item itemvalue="Gradle.ktor-scrap [:clean]" />
       <item itemvalue="Gradle.ktor-scrap [buildFatJar]" />
-      <item itemvalue="Gradle.GeneralRoutesTest" />
-      <item itemvalue="Gradle.ktor-hello [ktlintFormat]" />
-      <item itemvalue="Gradle.ktor-scrap [build]" />
-      <item itemvalue="Gradle.ktorhello [run]" />
+      <item itemvalue="Kotlin.ApplicationKt" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
+        <item itemvalue="Docker.Dockerfile" />
+        <item itemvalue="Gradle.ktor-scrap [:clean]" />
+        <item itemvalue="Kotlin.ApplicationKt" />
         <item itemvalue="Gradle.ktor-scrap [buildFatJar]" />
-        <item itemvalue="Gradle.ktor-hello [ktlintFormat]" />
-        <item itemvalue="Gradle.ktorhello [run]" />
-        <item itemvalue="Gradle.GeneralRoutesTest" />
-        <item itemvalue="Gradle.ktor-scrap [build]" />
       </list>
     </recent_temporary>
   </component>
@@ -474,7 +467,23 @@
       <option name="project" value="LOCAL" />
       <updated>1748404050352</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Refactor: Simplify Dockerfile for Render deployment&#10;&#10;This commit updates the Dockerfile to align with Render's build and deployment process.&#10;&#10;Key changes:&#10;- Switched from a multi-stage build to a single-stage build using `openjdk:17-jre-slim`. Render handles the JAR building process separately.&#10;- Removed manual JAR copying from a build stage; now directly copies `build/libs/fat.jar`.&#10;- Removed non-root user creation (`appuser`, `appgroup`) as Render handles this.&#10;- Updated port exposure to use `$PORT` environment variable as expected by Render, instead of a hardcoded `8080`.&#10;- Changed `ENTRYPOINT` to `CMD` for running the application.">
+      <option name="closed" value="true" />
+      <created>1748404612142</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1748404612142</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Refactor: Simplify Dockerfile for Render deployment&#10;&#10;This commit updates the Dockerfile to align with Render's build and deployment process.&#10;&#10;Key changes:&#10;- Switched from a multi-stage build to a single-stage build using `openjdk:17-jre-slim`. Render handles the JAR building process separately.&#10;- Removed manual JAR copying from a build stage; now directly copies `build/libs/fat.jar`.&#10;- Removed non-root user creation (`appuser`, `appgroup`) as Render handles this.&#10;- Updated port exposure to use `$PORT` environment variable as expected by Render, instead of a hardcoded `8080`.&#10;- Changed `ENTRYPOINT` to `CMD` for running the application.">
+      <option name="closed" value="true" />
+      <created>1748460465369</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1748460465369</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -515,7 +524,8 @@
     <MESSAGE value="Refactor: Apply consistent formatting and import order&#10;&#10;This commit standardizes code formatting and import statement order across multiple files. Changes include:&#10;&#10;- Consistent trailing commas in constructor parameters and argument lists.&#10;- Standardized import order (e.g., `ScrapeOutput` before `ScrapeTarget`).&#10;- Removal of redundant newlines and spacing.&#10;&#10;These changes primarily affect files within the `features.vacanciesandroid` package and `app.routing` / `app.di`. No functional changes are introduced." />
     <MESSAGE value="Refactor: Centralize vacancy filtering in ScrapeOutput&#10;&#10;This commit introduces a static factory method `ScrapeOutput.withFiltering` to centralize the logic for filtering vacancies based on `target.needsFiltering`.&#10;&#10;All scrapers (`AmoScraper`, `BreezyScraper`, `DjinniScraper`, `DouScraper`, `LeverScraper`, `NovaDigitalScraper`, `SampleScraper`) have been updated to use this new method, removing redundant filtering logic from each scraper.&#10;&#10;Additionally, trailing whitespace has been removed from several files for consistency." />
     <MESSAGE value="feat: Add Dockerfile and .dockerignore&#10;&#10;This commit introduces a Dockerfile for building and running the application in a container.&#10;&#10;- The Dockerfile uses a multi-stage build:&#10;    - Stage 1: `gradle:8.2-jdk21` for building the fat JAR.&#10;    - Stage 2: `eclipse-temurin:21-jre-alpine` for running the application.&#10;- Creates a non-root user `appuser` for running the application.&#10;- Exposes port 8080.&#10;- Sets the entrypoint to run the `app.jar`.&#10;&#10;A `.dockerignore` file is also added to exclude unnecessary files and directories from the Docker build context." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: Add Dockerfile and .dockerignore&#10;&#10;This commit introduces a Dockerfile for building and running the application in a container.&#10;&#10;- The Dockerfile uses a multi-stage build:&#10;    - Stage 1: `gradle:8.2-jdk21` for building the fat JAR.&#10;    - Stage 2: `eclipse-temurin:21-jre-alpine` for running the application.&#10;- Creates a non-root user `appuser` for running the application.&#10;- Exposes port 8080.&#10;- Sets the entrypoint to run the `app.jar`.&#10;&#10;A `.dockerignore` file is also added to exclude unnecessary files and directories from the Docker build context." />
+    <MESSAGE value="Refactor: Simplify Dockerfile for Render deployment&#10;&#10;This commit updates the Dockerfile to align with Render's build and deployment process.&#10;&#10;Key changes:&#10;- Switched from a multi-stage build to a single-stage build using `openjdk:17-jre-slim`. Render handles the JAR building process separately.&#10;- Removed manual JAR copying from a build stage; now directly copies `build/libs/fat.jar`.&#10;- Removed non-root user creation (`appuser`, `appgroup`) as Render handles this.&#10;- Updated port exposure to use `$PORT` environment variable as expected by Render, instead of a hardcoded `8080`.&#10;- Changed `ENTRYPOINT` to `CMD` for running the application." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor: Simplify Dockerfile for Render deployment&#10;&#10;This commit updates the Dockerfile to align with Render's build and deployment process.&#10;&#10;Key changes:&#10;- Switched from a multi-stage build to a single-stage build using `openjdk:17-jre-slim`. Render handles the JAR building process separately.&#10;- Removed manual JAR copying from a build stage; now directly copies `build/libs/fat.jar`.&#10;- Removed non-root user creation (`appuser`, `appgroup`) as Render handles this.&#10;- Updated port exposure to use `$PORT` environment variable as expected by Render, instead of a hardcoded `8080`.&#10;- Changed `ENTRYPOINT` to `CMD` for running the application." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

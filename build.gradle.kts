@@ -56,7 +56,6 @@ dependencies {
     implementation("io.insert-koin:koin-ktor:3.4.3")
     implementation("io.insert-koin:koin-logger-slf4j:3.4.3")
 
-    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
     // Firebase Admin SDK
     implementation("com.google.firebase:firebase-admin:9.2.0")
     // Logging
@@ -71,6 +70,10 @@ dependencies {
 
     // JSoup for web scraping
     implementation("org.jsoup:jsoup:1.17.2")
+
+    // OpenAPI
+    implementation("io.ktor:ktor-server-openapi:$ktorVersion")
+    implementation("io.ktor:ktor-server-swagger:$ktorVersion")
 }
 
 application {

@@ -1,9 +1,9 @@
 package dev.onelenyk.ktorscrap.app
 
 import dev.onelenyk.ktorscrap.app.di.koinModule
-import dev.onelenyk.ktorscrap.app.di.provideServerPort
+import dev.onelenyk.ktorscrap.app.env.EnvironmentManager
+import dev.onelenyk.ktorscrap.app.plugins.configureSwagger
 import dev.onelenyk.ktorscrap.app.routing.ServerRouting
-import io.github.cdimascio.dotenv.dotenv
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -17,6 +17,7 @@ import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
+import org.koin.logger.slf4jLogger
 import ru.inforion.lab403.common.logging.TRACE
 import ru.inforion.lab403.common.logging.logger
 import java.net.InetAddress
@@ -26,7 +27,8 @@ class Server {
 
     fun start(): NettyApplicationEngine {
         log.config { "Starting Ktor server initialization..." }
-        val port = System.getenv("PORT")?.toInt() ?: provideServerPort(dotenv = dotenv()) ?: 8080
+        
+        val port = EnvironmentManager.getPort()
         log.info { "Configuring server on port: $port" }
 
         val ip = InetAddress.getLocalHost().hostAddress
@@ -54,7 +56,7 @@ class Server {
 
             log.fine { "Installing Koin dependency injection..." }
             install(Koin) {
-                log
+                slf4jLogger()
                 modules(koinModule)
             }
 
@@ -66,6 +68,9 @@ class Server {
 
             log.finest { "Setting up content serialization..." }
             configureSerialization()
+
+            log.finest { "Configuring Swagger..." }
+            configureSwagger()
 
             log.finest { "Configuring routing..." }
             configureRouting()

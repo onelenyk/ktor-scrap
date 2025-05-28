@@ -7,7 +7,7 @@ import com.mongodb.ServerApiVersion
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
-import dev.onelenyk.ktorscrap.app.di.DbCredentials
+import dev.onelenyk.ktorscrap.app.env.DbCredentials
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bson.Document

@@ -1,11 +1,13 @@
-# Use OpenJDK 17 runtime image
-FROM openjdk:17-jre-slim
-
-# Set working directory
+# Build stage
+FROM gradle:8.5-jdk21 AS build
 WORKDIR /app
+COPY . .
+RUN gradle buildFatJar --no-daemon
 
-# Copy the pre-built JAR file (Render builds this for you)
-COPY build/libs/fat.jar app.jar
+# Run stage
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/build/libs/fat.jar app.jar
 
 # Expose the port (Render expects your app to bind to $PORT)
 EXPOSE $PORT
