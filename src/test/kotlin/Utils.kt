@@ -1,4 +1,4 @@
-import dev.onelenyk.ktorscrap.app.Server
+import dev.onelenyk.ktorscrap.presentation.Server
 import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
 import io.ktor.client.request.get

@@ -1,7 +1,7 @@
 // Define variables for project configurations
 val projectGroup = "dev.onelenyk"
 val appId = "ktorscrap"
-val mainAppClassName = "$projectGroup.$appId.app.ApplicationKt"
+val mainAppClassName = "$projectGroup.$appId.presentation.ApplicationKt"
 
 val ktorVersion: String by project
 val kotlinVersion: String by project
@@ -24,12 +24,14 @@ version = projectVersion
 
 repositories {
     mavenCentral()
+    google()
     maven(url = "https://jitpack.io")
 }
 
 dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
 
     implementation(kotlin("stdlib"))
 
@@ -58,6 +60,7 @@ dependencies {
 
     // Firebase Admin SDK
     implementation("com.google.firebase:firebase-admin:9.2.0")
+    implementation("com.google.firebase:firebase-firestore-ktx")
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     // Serialization

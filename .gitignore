@@ -42,4 +42,4 @@ bin/
 ### Mac OS ###
 .DS_Store
 .env
-admin_key.json
+admin_key.json\n# Gemini Project Context\n.gemini/

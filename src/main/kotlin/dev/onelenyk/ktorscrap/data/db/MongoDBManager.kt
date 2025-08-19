@@ -7,7 +7,7 @@ import com.mongodb.ServerApiVersion
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
-import dev.onelenyk.ktorscrap.app.env.DbCredentials
+import dev.onelenyk.ktorscrap.presentation.env.DbCredentials
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bson.Document
@@ -15,17 +15,18 @@ import org.bson.UuidRepresentation
 
 class MongoDBManager(dbCredentials: DbCredentials) {
     private val connectionString =
-        "mongodb+srv://${dbCredentials.username}:${dbCredentials.password}${dbCredentials.connection}"
+        "mongodb://${dbCredentials.username}:${dbCredentials.password}${dbCredentials.connection}"
 
     private val serverApi = ServerApi.builder().version(ServerApiVersion.V1).build()
     private val mongoClientSettings =
         MongoClientSettings.builder()
             .uuidRepresentation(UuidRepresentation.STANDARD) // Specify the desired UUID representation
-            .applyConnectionString(ConnectionString(connectionString)).serverApi(serverApi).build()
+            .applyConnectionString(ConnectionString(connectionString.apply { System.out.println("connectionString $connectionString") }))
+            .serverApi(serverApi).build()
 
     private val mongoClient = MongoClient.create(mongoClientSettings)
 
-    private val database: MongoDatabase = mongoClient.getDatabase("Cluster0")
+    private val database: MongoDatabase = mongoClient.getDatabase("cluster")
 
     fun <T : Any> getCollection(
         collectionName: String,
