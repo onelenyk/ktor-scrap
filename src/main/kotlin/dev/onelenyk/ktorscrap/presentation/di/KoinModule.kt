@@ -16,6 +16,7 @@ import dev.onelenyk.ktorscrap.domain.usecase.JobOutputManager
 import dev.onelenyk.ktorscrap.domain.usecase.JobProcessor
 import dev.onelenyk.ktorscrap.domain.usecase.JobQueueManager
 import dev.onelenyk.ktorscrap.presentation.env.EnvironmentManager
+import dev.onelenyk.ktorscrap.presentation.monitoring.SystemMonitor
 import dev.onelenyk.ktorscrap.presentation.routing.ServerRouting
 import dev.onelenyk.ktorscrap.presentation.routing.UtilRoutes
 import kotlinx.coroutines.CoroutineScope
@@ -33,6 +34,15 @@ val koinModule =
         // Core components
         single { provideCoroutineScope() }
         single<Logger> { ConsoleLogger(enabled = true) }
+        single {
+            SystemHealthChecker(
+                logger = get(),
+                koin = getKoin(),
+                firestore = get(),
+            )
+        }
+        single { SystemMonitor(get(), get()) }
+   //     single { SystemHealthLogger(get()) }
 
         // Services
         single<Database<ScrapingJob>> {

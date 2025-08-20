@@ -22,6 +22,10 @@ import ru.inforion.lab403.common.logging.TRACE
 import ru.inforion.lab403.common.logging.logger
 import java.net.InetAddress
 
+import dev.onelenyk.ktorscrap.presentation.monitoring.SystemMonitor
+import io.ktor.server.application.ApplicationStarted
+import org.koin.ktor.ext.get
+
 class Server {
     val log = logger(TRACE)
 
@@ -37,6 +41,12 @@ class Server {
         val server =
             embeddedServer(Netty, port = port) {
                 module(this)
+
+                environment.monitor.subscribe(ApplicationStarted) {
+                    val monitor = get<SystemMonitor>()
+                    monitor.start()
+                    log.info { "System monitor started." }
+                }
             }
 
         try {
