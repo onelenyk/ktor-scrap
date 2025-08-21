@@ -12,6 +12,9 @@ import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
+import io.ktor.server.http.content.defaultResource
+import io.ktor.server.http.content.resources
+import io.ktor.server.http.content.static
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.requestvalidation.RequestValidation
@@ -103,6 +106,10 @@ class Server {
 
         routing {
             router.registerRoutes(this)
+            static("/") {
+                resources("static")
+                defaultResource("static/index.html")
+            }
         }
     }
 }

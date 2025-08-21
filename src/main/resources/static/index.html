@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ktor Scrap</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+        button {
+            font-size: 1.2em;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            width: 80%;
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ktor Scraper Control</h1>
+    <div>
+        <button id="startScraping">Start Scraping Default Jobs</button>
+        <button id="refreshJobs">Refresh Jobs List</button>
+    </div>
+
+    <h2>Response from Actions:</h2>
+    <pre id="response"></pre>
+
+    <h2>Scraping Jobs:</h2>
+    <table id="jobsTable">
+        <thead>
+            <tr>
+                <th>UUID</th>
+                <th>Source Name</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Error</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Job rows will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        const responseElement = document.getElementById('response');
+        const jobsTableBody = document.querySelector('#jobsTable tbody');
+
+        // Function to fetch and display jobs
+        function fetchJobs() {
+            jobsTableBody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
+            fetch('/api/jobs')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(jobs => {
+                    jobsTableBody.innerHTML = ''; // Clear loading message
+                    if (jobs.length === 0) {
+                        jobsTableBody.innerHTML = '<tr><td colspan="6">No jobs found.</td></tr>';
+                        return;
+                    }
+                    jobs.forEach(job => {
+                        const row = document.createElement('tr');
+                        const createdAt = new Date(job.createdAt * 1000).toLocaleString();
+                        const updatedAt = new Date(job.updatedAt * 1000).toLocaleString();
+                        row.innerHTML = `
+                            <td>${job.uuid}</td>
+                            <td>${job.source.name}</td>
+                            <td>${job.status}</td>
+                            <td>${createdAt}</td>
+                            <td>${updatedAt}</td>
+                            <td>${job.error || ''}</td>
+                        `;
+                        jobsTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    jobsTableBody.innerHTML = `<tr><td colspan="6">Error loading jobs: ${error}</td></tr>`;
+                });
+        }
+
+        // Event listener for starting scraping
+        document.getElementById('startScraping').addEventListener('click', () => {
+            responseElement.textContent = 'Adding jobs to the queue...';
+            fetch('/api/default-jobs/add-all')
+                .then(response => response.json())
+                .then(data => {
+                    responseElement.textContent = JSON.stringify(data, null, 2);
+                    // Refresh the jobs list after adding new ones
+                    fetchJobs();
+                })
+                .catch(error => {
+                    responseElement.textContent = 'Error: ' + error;
+                });
+        });
+
+        // Event listener for refreshing jobs
+        document.getElementById('refreshJobs').addEventListener('click', fetchJobs);
+
+        // Initial load of jobs
+        fetchJobs();
+    </script>
+</body>
+</html>
