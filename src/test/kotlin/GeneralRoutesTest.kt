@@ -11,7 +11,6 @@ import org.junit.BeforeClass
 import kotlin.test.Test
 
 class GeneralRoutesTest {
-
     companion object {
         @BeforeClass
         @JvmStatic
@@ -25,6 +24,7 @@ class GeneralRoutesTest {
             // Global teardown if necessary
         }
     }
+
     @Test
     fun testLiveRoute() =
         testApplication {

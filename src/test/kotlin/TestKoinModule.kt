@@ -47,7 +47,8 @@ val testKoinModule =
             SystemHealthChecker(
                 logger = get(),
                 koin = getKoin(),
-                firestore = get(), // This will be the mocked Firestore
+                // This will be the mocked Firestore
+                firestore = get(),
             )
         }
         single { SystemMonitor(get(), get()) }
