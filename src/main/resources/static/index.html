@@ -23,6 +23,16 @@
         .status-COMPLETED { background-color: #d1e7dd; }
         .status-FAILED { background-color: #f8d7da; }
         .status-UNKNOWN { background-color: #e9ecef; }
+        .group-start td {
+            border-top: 2px solid #6c757d;
+        }
+        .source-color-0 { background-color: #f8d7da; }
+        .source-color-1 { background-color: #d1e7dd; }
+        .source-color-2 { background-color: #cfe2ff; }
+        .source-color-3 { background-color: #fff3cd; }
+        .source-color-4 { background-color: #f8f9fa; }
+        .source-color-5 { background-color: #e9ecef; }
+        .source-color-6 { background-color: #d6d8db; }
         .modal-body pre {
             max-height: 400px;
             overflow-y: auto;
@@ -250,6 +260,16 @@
                 .catch(error => showResponse(`Error restarting job: ${error}`, 'danger'));
         }
 
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = (hash << 5) - hash + char;
+                hash |= 0; // Convert to 32bit integer
+            }
+            return Math.abs(hash);
+        }
+
         function fetchJobs() {
             const done = showLoading(document.getElementById('refreshJobs'));
             jobsTableBody.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
@@ -260,29 +280,40 @@
                 })
                 .then(jobs => {
                     const statusOrder = { 'PROCESSING': 1, 'PENDING': 2 };
-                    jobs.sort((a, b) => (statusOrder[a.status] || 3) - (statusOrder[b.status] || 3));
+                    jobs.sort((a, b) => {
+                        // Primary sort by source name
+                        if (a.source.name < b.source.name) return -1;
+                        if (a.source.name > b.source.name) return 1;
+                        // Secondary sort by status
+                        const orderA = statusOrder[a.status] || 3;
+                        const orderB = statusOrder[b.status] || 3;
+                        return orderA - orderB;
+                    });
+
                     jobsTableBody.innerHTML = '';
                     if (jobs.length === 0) {
                         jobsTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No jobs found.</td></tr>';
                         return;
                     }
+
+                    let lastSource = null;
                     jobs.forEach(job => {
                         const row = document.createElement('tr');
                         const status = job.status || 'UNKNOWN';
-                        const statusClass = status.toLowerCase();
-                        const badgeBg = {
-                            'processing': 'primary',
-                            'pending': 'warning',
-                            'completed': 'success',
-                            'failed': 'danger'
-                        }[statusClass] || 'secondary';
+                        
+                        // Visual grouping
+                        if (job.source.name !== lastSource) {
+                            row.classList.add('group-start');
+                            lastSource = job.source.name;
+                        }
+                        const colorIndex = simpleHash(job.source.name) % 7;
+                        row.classList.add(`source-color-${colorIndex}`);
 
-                        row.className = `status-${status}`;
                         const updatedAt = new Date(job.updatedAt * 1000).toLocaleString();
                         row.innerHTML = `
                             <td><small>${job.uuid}</small></td>
                             <td>${job.source.name}</td>
-                            <td><span class="badge bg-${badgeBg}">${status}</span></td>
+                            <td><span class="badge bg-dark">${status}</span></td>
                             <td>${updatedAt}</td>
                             <td>
                                 <button class="btn btn-sm btn-outline-primary action-button" onclick="viewResult('${job.uuid}')"><i class="bi bi-eye"></i></button>
