@@ -28,4 +28,6 @@ interface ScrapingJobRepository {
         result: ScrapingResult? = null,
         error: String? = null,
     ): ScrapingJob?
+
+    suspend fun deleteAll(): Int
 }

@@ -69,6 +69,19 @@ fun Route.scrapingJobRoutes(
             }
         }
 
+        // Delete all jobs
+        delete("/all") {
+            try {
+                val count = repository.deleteAll()
+                call.respond(HttpStatusCode.OK, mapOf("deleted_count" to count))
+            } catch (e: Exception) {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    mapOf("error" to (e.message ?: "Unknown error occurred")),
+                )
+            }
+        }
+
         // Delete job
         delete("{id}") {
             try {

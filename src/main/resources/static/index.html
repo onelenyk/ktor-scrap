@@ -94,6 +94,7 @@
     <div>
         <button id="startScraping">Start Scraping Default Jobs</button>
         <button id="refreshJobs">Refresh Jobs List</button>
+        <button id="removeAllJobs">Remove All Jobs</button>
     </div>
 
     <h2>Response from Actions:</h2>
@@ -213,6 +214,26 @@
                 });
         }
 
+        // Function to remove all jobs
+        function removeAllJobs() {
+            if (!confirm('Are you sure you want to remove ALL jobs? This action cannot be undone.')) {
+                return;
+            }
+
+            responseElement.textContent = 'Removing all jobs...';
+            fetch('/api/jobs/all', {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                responseElement.textContent = `${data.deleted_count} jobs removed successfully.`;
+                fetchJobs(); // Refresh the list
+            })
+            .catch(error => {
+                responseElement.textContent = `Error removing all jobs: ${error}`;
+            });
+        }
+
         // Function to fetch and display jobs
         function fetchJobs() {
             jobsTableBody.innerHTML = '<tr><td colspan="7">Loading...</td></tr>';
@@ -279,6 +300,9 @@
 
         // Event listener for refreshing jobs
         document.getElementById('refreshJobs').addEventListener('click', fetchJobs);
+
+        // Event listener for removing all jobs
+        document.getElementById('removeAllJobs').addEventListener('click', removeAllJobs);
 
         // Initial load of jobs
         fetchJobs();

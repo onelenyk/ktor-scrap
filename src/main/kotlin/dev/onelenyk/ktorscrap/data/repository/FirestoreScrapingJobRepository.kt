@@ -77,4 +77,19 @@ class FirestoreScrapingJobRepository(
             )
         return update(jobId, updatedJob)
     }
+
+    override suspend fun deleteAll(): Int =
+        withContext(Dispatchers.IO) {
+            val snapshot = collection.listDocuments().toList()
+            if (snapshot.isEmpty()) {
+                return@withContext 0
+            }
+
+            val batch = firestore.batch()
+            snapshot.forEach { doc ->
+                batch.delete(doc)
+            }
+            batch.commit().get()
+            snapshot.size
+        }
 }
