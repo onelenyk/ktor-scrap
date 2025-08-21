@@ -22,6 +22,7 @@
         .status-PENDING { background-color: #fff3cd; }
         .status-COMPLETED { background-color: #d1e7dd; }
         .status-FAILED { background-color: #f8d7da; }
+        .status-UNKNOWN { background-color: #e9ecef; }
         .modal-body pre {
             max-height: 400px;
             overflow-y: auto;
@@ -92,7 +93,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <pre id="modal-content-data"></pre>
+            <div id="modal-content-data"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="toggleViewBtn" class="btn btn-secondary">Show JSON</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
@@ -132,8 +137,11 @@
         const resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
         const addJobModal = new bootstrap.Modal(document.getElementById('addJobModal'));
         const modalContent = document.getElementById('modal-content-data');
+        const toggleViewBtn = document.getElementById('toggleViewBtn');
 
-        // "Add Job" modal elements
+        let currentVacancies = [];
+        let isJsonView = false;
+
         const predefinedTargetsSelect = document.getElementById('predefinedTargets');
         const addJobJsonTextarea = document.getElementById('addJobJson');
         let predefinedTargets = [];
@@ -152,21 +160,62 @@
             };
         }
 
+        function renderVacancies(asJson = false) {
+            if (asJson) {
+                modalContent.innerHTML = `<pre>${JSON.stringify(currentVacancies, null, 2)}</pre>`;
+                toggleViewBtn.textContent = 'Show Formatted';
+                isJsonView = true;
+            } else {
+                let html = '<ul class="list-group">';
+                currentVacancies.forEach(v => {
+                    html += `
+                        <li class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">${v.title || 'No Title'}</h5>
+                                <small>${v.company || 'No Company'}</small>
+                            </div>
+                            <p class="mb-1">${v.location || 'No Location'}</p>
+                            <small><a href="${v.url}" target="_blank" rel="noopener noreferrer">View Job</a></small>
+                        </li>`;
+                });
+                html += '</ul>';
+                modalContent.innerHTML = html;
+                toggleViewBtn.textContent = 'Show JSON';
+                isJsonView = false;
+            }
+        }
+
+        toggleViewBtn.addEventListener('click', () => {
+            renderVacancies(!isJsonView);
+        });
+
         function viewResult(jobId) {
-            modalContent.textContent = 'Loading...';
+            modalContent.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
             resultModal.show();
             fetch(`/api/jobs/${jobId}`)
                 .then(response => response.json())
                 .then(job => {
-                    if (job.result && job.result.data && job.result.data.vacancies) {
-                        modalContent.textContent = JSON.stringify(job.result.data.vacancies, null, 2);
+                    if (job.result && job.result.data && Array.isArray(job.result.data.vacancies)) {
+                        currentVacancies = job.result.data.vacancies;
+                        if (currentVacancies.length === 0) {
+                            modalContent.innerHTML = '<p class="text-center">No vacancies found for this job.</p>';
+                            toggleViewBtn.style.display = 'none';
+                            return;
+                        }
+                        toggleViewBtn.style.display = 'block';
+                        renderVacancies(); // Render formatted view by default
                     } else if (job.error) {
-                        modalContent.textContent = `Error: ${job.error}`;
+                        modalContent.innerHTML = `<div class="alert alert-danger">Error: ${job.error}</div>`;
+                        toggleViewBtn.style.display = 'none';
                     } else {
-                        modalContent.textContent = 'No result data available for this job.';
+                        modalContent.innerHTML = '<p class="text-center">No result data available for this job.</p>';
+                        toggleViewBtn.style.display = 'none';
                     }
                 })
-                .catch(error => modalContent.textContent = `Error fetching job details: ${error}`);
+                .catch(error => {
+                    modalContent.innerHTML = `<div class="alert alert-danger">Error fetching job details: ${error}</div>`;
+                    toggleViewBtn.style.display = 'none';
+                });
         }
 
         function removeJob(jobId) {
@@ -219,7 +268,7 @@
                     }
                     jobs.forEach(job => {
                         const row = document.createElement('tr');
-                        const status = job.status || 'UNKNOWN'; // Safely handle null/undefined status
+                        const status = job.status || 'UNKNOWN';
                         const statusClass = status.toLowerCase();
                         const badgeBg = {
                             'processing': 'primary',
