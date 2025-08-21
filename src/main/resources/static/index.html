@@ -219,12 +219,21 @@
                     }
                     jobs.forEach(job => {
                         const row = document.createElement('tr');
-                        row.className = `status-${job.status}`;
+                        const status = job.status || 'UNKNOWN'; // Safely handle null/undefined status
+                        const statusClass = status.toLowerCase();
+                        const badgeBg = {
+                            'processing': 'primary',
+                            'pending': 'warning',
+                            'completed': 'success',
+                            'failed': 'danger'
+                        }[statusClass] || 'secondary';
+
+                        row.className = `status-${status}`;
                         const updatedAt = new Date(job.updatedAt * 1000).toLocaleString();
                         row.innerHTML = `
                             <td><small>${job.uuid}</small></td>
                             <td>${job.source.name}</td>
-                            <td><span class="badge bg-${job.status.toLowerCase()}">${job.status}</span></td>
+                            <td><span class="badge bg-${badgeBg}">${status}</span></td>
                             <td>${updatedAt}</td>
                             <td>
                                 <button class="btn btn-sm btn-outline-primary action-button" onclick="viewResult('${job.uuid}')"><i class="bi bi-eye"></i></button>
