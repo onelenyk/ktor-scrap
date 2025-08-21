@@ -1,39 +1,59 @@
 package dev.onelenyk.ktorscrap.data.repository
 
-import dev.onelenyk.ktorscrap.data.db.Database
+import com.google.cloud.firestore.Firestore
 import dev.onelenyk.ktorscrap.data.model.JobStatus
 import dev.onelenyk.ktorscrap.data.model.ScrapingJob
+import dev.onelenyk.ktorscrap.data.model.ScrapingJobMapper
 import dev.onelenyk.ktorscrap.data.model.ScrapingResult
 import dev.onelenyk.ktorscrap.domain.model.ScrapeTarget
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.time.Instant
 import java.util.UUID
 
 class FirestoreScrapingJobRepository(
-    private val firestoreService: Database<ScrapingJob>,
+    private val firestore: Firestore,
 ) : ScrapingJobRepository {
+    private val collection = firestore.collection("scraping_jobs")
+
     override suspend fun create(job: ScrapingJob): ScrapingJob {
-        return firestoreService.create(job)
+        withContext(Dispatchers.IO) {
+            collection.document(job.id).set(ScrapingJobMapper.toDocument(job)).get()
+        }
+        return job
     }
 
-    override suspend fun getById(id: UUID): ScrapingJob? {
-        return firestoreService.getById(id.toString())
-    }
+    override suspend fun getById(id: UUID): ScrapingJob? =
+        withContext(Dispatchers.IO) {
+            val snapshot = collection.document(id.toString()).get().get()
+            if (snapshot.exists()) {
+                ScrapingJobMapper.fromDocument(snapshot)
+            } else {
+                null
+            }
+        }
 
     override suspend fun delete(id: UUID): Boolean {
-        firestoreService.delete(id.toString())
-        return true // Firestore delete doesn't return a boolean
+        return withContext(Dispatchers.IO) {
+            collection.document(id.toString()).delete().get()
+            true
+        }
     }
 
-    override suspend fun readAll(): List<ScrapingJob> {
-        return firestoreService.getAll()
-    }
+    override suspend fun getAll(): List<ScrapingJob> =
+        withContext(Dispatchers.IO) {
+            val snapshot = collection.get().get()
+            snapshot.documents.map { ScrapingJobMapper.fromDocument(it) }
+        }
 
     override suspend fun update(
         id: UUID,
-        document: org.bson.Document,
+        updatedJob: ScrapingJob,
     ): ScrapingJob? {
-        // This method is specific to MongoDB and needs to be adapted for Firestore.
-        // For now, it will not be implemented.
-        throw UnsupportedOperationException("Update with BSON Document is not supported for Firestore.")
+        withContext(Dispatchers.IO) {
+            collection.document(id.toString()).set(ScrapingJobMapper.toDocument(updatedJob)).get()
+        }
+        return updatedJob
     }
 
     override suspend fun createJob(source: ScrapeTarget): ScrapingJob {
@@ -47,13 +67,14 @@ class FirestoreScrapingJobRepository(
         result: ScrapingResult?,
         error: String?,
     ): ScrapingJob? {
-        val job = getById(jobId) ?: return null
+        val existingJob = getById(jobId) ?: return null
         val updatedJob =
-            job.copy(
+            existingJob.copy(
                 status = status,
                 result = result,
                 error = error,
+                updatedAt = Instant.now().epochSecond,
             )
-        return firestoreService.update(updatedJob)
+        return update(jobId, updatedJob)
     }
 }

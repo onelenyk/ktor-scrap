@@ -1,3 +1,4 @@
+import dev.onelenyk.ktorscrap.presentation.env.EnvironmentManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.logging.Logging
@@ -13,7 +14,7 @@ open class BaseTest {
         @BeforeClass
         @JvmStatic
         fun setup() {
-            // Global setup if necessary
+            EnvironmentManager.load(arrayOf<String>("FIRESTORE_PROJECT_ID=dondadona"))
         }
 
         @AfterClass

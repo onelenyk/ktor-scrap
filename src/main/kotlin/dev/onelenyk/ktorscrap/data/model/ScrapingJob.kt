@@ -6,7 +6,6 @@ import dev.onelenyk.ktorscrap.domain.model.ScrapeTarget
 import dev.onelenyk.ktorscrap.utils.UUIDSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import org.bson.codecs.pojo.annotations.BsonId
 import java.time.Instant
 import java.util.UUID
 
@@ -18,7 +17,7 @@ data class ScrapingResult(
 
 @Serializable
 data class ScrapingJob(
-    @Serializable(with = UUIDSerializer::class) @BsonId @Contextual val uuid: UUID = UUID.randomUUID(),
+    @Serializable(with = UUIDSerializer::class) @Contextual val uuid: UUID = UUID.randomUUID(),
     val source: ScrapeTarget,
     val status: JobStatus = JobStatus.PENDING,
     val createdAt: Long = Instant.now().epochSecond,

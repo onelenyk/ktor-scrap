@@ -8,11 +8,9 @@ class ScraperTypeConfigRepository(private val firestoreService: Database<Scraper
 
     suspend fun getById(id: String): ScraperTypeConfig? = firestoreService.getById(id)
 
-    suspend fun create(scraperTypeConfig: ScraperTypeConfig): ScraperTypeConfig =
-        firestoreService.create(scraperTypeConfig)
+    suspend fun create(scraperTypeConfig: ScraperTypeConfig): ScraperTypeConfig = firestoreService.create(scraperTypeConfig)
 
-    suspend fun update(scraperTypeConfig: ScraperTypeConfig): ScraperTypeConfig =
-        firestoreService.update(scraperTypeConfig)
+    suspend fun update(scraperTypeConfig: ScraperTypeConfig): ScraperTypeConfig = firestoreService.update(scraperTypeConfig)
 
     suspend fun delete(id: String) = firestoreService.delete(id)
 }

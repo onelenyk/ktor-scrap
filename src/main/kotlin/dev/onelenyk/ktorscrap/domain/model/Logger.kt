@@ -1,6 +1,8 @@
 package dev.onelenyk.ktorscrap.domain.model
 
 interface Logger {
+    fun warning(msg: String)
+
     fun info(msg: String)
 
     fun warn(msg: String)
@@ -22,6 +24,10 @@ interface Logger {
 }
 
 class ConsoleLogger(private val prefix: String = "", private val enabled: Boolean = true) : Logger {
+    override fun warning(msg: String) {
+        if (enabled) println("\u001B[36m$prefix[WRNG]\u001B[0m $msg")
+    }
+
     override fun info(msg: String) {
         if (enabled) println("\u001B[36m$prefix[INFO]\u001B[0m $msg")
     }

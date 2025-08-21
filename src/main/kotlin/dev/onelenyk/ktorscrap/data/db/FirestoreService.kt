@@ -35,9 +35,10 @@ class FirestoreService<T : Identifiable>(
             item
         }
 
-    override suspend fun delete(id: String) {
-        withContext(Dispatchers.IO) {
+    override suspend fun delete(id: String): Boolean {
+        return withContext(Dispatchers.IO) {
             collection.document(id).delete().get()
+            true
         }
     }
 }

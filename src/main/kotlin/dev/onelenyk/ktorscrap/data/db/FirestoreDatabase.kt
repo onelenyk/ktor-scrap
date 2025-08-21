@@ -9,14 +9,26 @@ import dev.onelenyk.ktorscrap.presentation.env.DbCredentials
 
 class FirestoreDatabase(private val env: DbCredentials) {
     val db: Firestore by lazy {
-        val serviceAccount = this::class.java.classLoader.getResourceAsStream("service-account-key.json")
-        val credentials = GoogleCredentials.fromStream(serviceAccount)
-        val options =
-            FirebaseOptions.builder()
-                .setCredentials(credentials)
-                .setProjectId(env.firestoreProjectId)
-                .build()
-        FirebaseApp.initializeApp(options)
+        initializeFirebaseApp()
         FirestoreClient.getFirestore()
+    }
+
+    private fun getServiceAccountKeyStream() =
+        this::class.java.classLoader.getResourceAsStream("service-account-key.json")
+            ?: throw IllegalStateException("service-account-key.json not found in classpath.")
+
+    private fun buildFirebaseOptions(credentials: GoogleCredentials): FirebaseOptions =
+        FirebaseOptions.builder()
+            .setCredentials(credentials)
+            .setProjectId(env.firestoreProjectId)
+            .build()
+
+    private fun initializeFirebaseApp() {
+        if (FirebaseApp.getApps().isEmpty()) {
+            val serviceAccountStream = getServiceAccountKeyStream()
+            val credentials = GoogleCredentials.fromStream(serviceAccountStream)
+            val options = buildFirebaseOptions(credentials)
+            FirebaseApp.initializeApp(options)
+        }
     }
 }

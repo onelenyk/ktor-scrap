@@ -43,3 +43,5 @@ bin/
 .DS_Store
 .env
 admin_key.json\n# Gemini Project Context\n.gemini/
+/src/main/service-account-key.json
+/src/main/resources/service-account-key.json

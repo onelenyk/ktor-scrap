@@ -9,12 +9,13 @@ class ServerRouting(
     val repository: ScrapingJobRepository,
     val jobQueueManager: JobQueueManager,
     val scraperTypeConfigRepository: ScraperTypeConfigRepository,
+    val utilRoutes: UtilRoutes,
+    val defaultJobsRoutes: DefaultJobsRoutes,
 ) {
-    private val utilRoutes = UtilRoutes()
-
     fun registerRoutes(routing: Routing) {
         utilRoutes.registerRoutes(routing)
         routing.scrapingJobRoutes(repository, jobQueueManager)
-        routing.scraperTypeConfigRoutes(scraperTypeConfigRepository)
+        //  routing.scraperTypeConfigRoutes(scraperTypeConfigRepository)
+        defaultJobsRoutes.registerRoutes(routing)
     }
 }

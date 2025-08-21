@@ -1,4 +1,4 @@
-package dev.onelenyk.ktorscrap.presentation.di
+package dev.onelenyk.ktorscrap.test
 
 import dev.onelenyk.ktorscrap.data.db.Database
 import dev.onelenyk.ktorscrap.data.db.FirestoreDatabase
@@ -19,6 +19,7 @@ import dev.onelenyk.ktorscrap.domain.model.ScraperTypeConfig
 import dev.onelenyk.ktorscrap.domain.usecase.JobOutputManager
 import dev.onelenyk.ktorscrap.domain.usecase.JobProcessor
 import dev.onelenyk.ktorscrap.domain.usecase.JobQueueManager
+import dev.onelenyk.ktorscrap.presentation.di.SystemHealthChecker
 import dev.onelenyk.ktorscrap.presentation.env.EnvironmentManager
 import dev.onelenyk.ktorscrap.presentation.monitoring.SystemMonitor
 import dev.onelenyk.ktorscrap.presentation.routing.DefaultJobsRoutes
@@ -29,12 +30,15 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import org.koin.dsl.module
 
-val koinModule =
+val testKoinModule =
     module {
-        // Environment and database setup
-        single { EnvironmentManager.getDbCredentials() }
+        // Mock Firestore for tests
         single { FirestoreDatabase(get()) }
         single { get<FirestoreDatabase>().db }
+
+        // Environment and database setup
+        single { EnvironmentManager.getDbCredentials() }
+        // Use mock Firestore directly, no need for FirestoreDatabase in tests
 
         // Core components
         single { provideCoroutineScope() }
@@ -43,15 +47,14 @@ val koinModule =
             SystemHealthChecker(
                 logger = get(),
                 koin = getKoin(),
-                firestore = get(),
+                firestore = get(), // This will be the mocked Firestore
             )
         }
         single { SystemMonitor(get(), get()) }
 
         // Services
-
         single<Database<ScraperTypeConfig>> {
-            FirestoreService(
+            FirestoreService<ScraperTypeConfig>(
                 get(),
                 "scraper_types",
                 ScraperTypeConfig::class.java,

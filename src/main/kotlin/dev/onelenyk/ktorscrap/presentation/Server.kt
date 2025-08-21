@@ -2,10 +2,12 @@ package dev.onelenyk.ktorscrap.presentation
 
 import dev.onelenyk.ktorscrap.presentation.di.koinModule
 import dev.onelenyk.ktorscrap.presentation.env.EnvironmentManager
+import dev.onelenyk.ktorscrap.presentation.monitoring.SystemMonitor
 import dev.onelenyk.ktorscrap.presentation.plugins.configureSwagger
 import dev.onelenyk.ktorscrap.presentation.routing.ServerRouting
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStarted
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -15,16 +17,13 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.requestvalidation.RequestValidation
 import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
+import org.koin.ktor.ext.get
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import ru.inforion.lab403.common.logging.TRACE
 import ru.inforion.lab403.common.logging.logger
 import java.net.InetAddress
-
-import dev.onelenyk.ktorscrap.presentation.monitoring.SystemMonitor
-import io.ktor.server.application.ApplicationStarted
-import org.koin.ktor.ext.get
 
 class Server {
     val log = logger(TRACE)
@@ -60,33 +59,35 @@ class Server {
         return server
     }
 
-    fun module(application: Application) =
-        application.apply {
-            log.fine { "Configuring application modules..." }
+    fun module(
+        application: Application,
+        koinTestModule: org.koin.core.module.Module? = null,
+    ) = application.apply {
+        log.fine { "Configuring application modules..." }
 
-            log.fine { "Installing Koin dependency injection..." }
-            install(Koin) {
-                slf4jLogger()
-                modules(koinModule)
-            }
-
-            log.fine { "Setting up request logging..." }
-            install(CallLogging)
-
-            log.fine { "Configuring request validation..." }
-            install(RequestValidation)
-
-            log.finest { "Setting up content serialization..." }
-            configureSerialization()
-
-            log.finest { "Configuring Swagger..." }
-            configureSwagger()
-
-            log.finest { "Configuring routing..." }
-            configureRouting()
-
-            log.finest { "Application modules configuration completed" }
+        log.fine { "Installing Koin dependency injection..." }
+        install(Koin) {
+            slf4jLogger()
+            modules(koinTestModule ?: koinModule)
         }
+
+        log.fine { "Setting up request logging..." }
+        install(CallLogging)
+
+        log.fine { "Configuring request validation..." }
+        install(RequestValidation)
+
+        log.finest { "Setting up content serialization..." }
+        configureSerialization()
+
+        log.finest { "Configuring Swagger..." }
+        configureSwagger()
+
+        log.finest { "Configuring routing..." }
+        configureRouting()
+
+        log.finest { "Application modules configuration completed" }
+    }
 
     private fun Application.configureSerialization() =
         install(ContentNegotiation) {

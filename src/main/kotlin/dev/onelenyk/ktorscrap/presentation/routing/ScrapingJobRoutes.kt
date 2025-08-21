@@ -22,7 +22,7 @@ fun Route.scrapingJobRoutes(
         // Get all jobs
         get {
             try {
-                val jobs = repository.readAll()
+                val jobs = repository.getAll()
                 call.respond(HttpStatusCode.OK, jobs)
             } catch (e: Exception) {
                 call.respond(

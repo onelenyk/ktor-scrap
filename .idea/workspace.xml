@@ -4,51 +4,33 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68371057-438e-49e3-a253-dcec33f98a15" name="Changes" comment="Refactor: Simplify Dockerfile for Render deployment&#10;&#10;This commit updates the Dockerfile to align with Render's build and deployment process.&#10;&#10;Key changes:&#10;- Switched from a multi-stage build to a single-stage build using `openjdk:17-jre-slim`. Render handles the JAR building process separately.&#10;- Removed manual JAR copying from a build stage; now directly copies `build/libs/fat.jar`.&#10;- Removed non-root user creation (`appuser`, `appgroup`) as Render handles this.&#10;- Updated port exposure to use `$PORT` environment variable as expected by Render, instead of a hardcoded `8080`.&#10;- Changed `ENTRYPOINT` to `CMD` for running the application.">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/FirestoreDatabase.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/repository/ScraperTypeConfigRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/scraper/ScraperManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/model/JobSource.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/model/ScraperType.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/model/ScraperTypeConfig.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/repository/JobScraper.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/Server.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/ScraperTypeConfigRoutes.kt" afterDir="false" />
+    <list default="true" id="68371057-438e-49e3-a253-dcec33f98a15" name="Changes" comment="feat(db): Migrate to Firestore and Refactor to Clean Architecture&#10;    2&#10;    3 This commit introduces a significant architectural refactoring to align with clean architecture principles and fully migrates the primary database&#10;      from MongoDB to Firestore.&#10;    4&#10;    5 **Key Changes:**&#10;    6&#10;    7 *   **Clean Architecture:**&#10;    8     *   The project structure is now organized into , , and  layers.&#10;    9     *   This separation of concerns improves modularity, testability, and maintainability.&#10;   10&#10;   11 *   **Firestore Integration:**&#10;   12     *   The application now uses Firestore as its primary database.&#10;   13     *   A generic  interface and  implementation have been created for reusable and type-safe database operations.&#10;   14     *   The  and  now use the .&#10;   15&#10;   16 *   **Data Models:**&#10;   17     *   An  interface has been introduced to ensure all database models have a consistent uid=501(lenyk) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),98(_lpadmin),701(com.apple.sharepoint.group.1),33(_appstore),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae) property, removing the need for&#10;      reflection.&#10;   18     *    and  now implement the  interface.&#10;   19&#10;   20 *   **Dependency Injection:**&#10;   21     *   The Koin module has been updated to provide the new Firestore-based services and repositories.&#10;   22     *   All MongoDB-related dependencies and configurations have been removed.&#10;   23&#10;   24 *   **Gemini AI Context:**&#10;   25     *   Added a  directory to store project-specific rules and plans for the Gemini AI agent.">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/Application.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/Server.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/di/KoinModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/di/KoinModule.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/env/EnvironmentManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/env/EnvironmentManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/plugins/SwaggerConfig.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/plugins/SwaggerConfig.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/routing/ScrapingJobRoutes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/ScrapingJobRoutes.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/routing/ServerRouting.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/ServerRouting.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/app/routing/UtilRoutes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/UtilRoutes.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/MongoDBManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/MongoDBManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/model/JobSource.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/model/Logger.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/model/Logger.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/model/ScrapeOutput.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/model/ScrapeOutput.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/model/ScrapeTarget.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/model/ScrapeTarget.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/model/Vacancy.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/model/Vacancy.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/model/VacancyFilter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/model/VacancyFilter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/processor/JobOutputManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobOutputManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/processor/JobProcessor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobProcessor.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/processor/JobQueueManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/repository/ScrapingJobRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/repository/ScrapingJobRepository.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/repository/model/ScrapingJob.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/model/ScrapingJob.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/routing/VacancyRoutes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/VacancyRoutes.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/AmoScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/scraper/AmoScraper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/BreezyScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/scraper/BreezyScraper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/DjinniScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/scraper/DjinniScraper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/DouScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/scraper/DouScraper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/JobScraper.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/LeverScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/scraper/LeverScraper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/NovaDigitalScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/scraper/NovaDigitalScraper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/SampleScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/scraper/SampleScraper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/scraper/ScraperManager.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/Utils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/Database.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/Database.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/FirestoreDatabase.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/FirestoreDatabase.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/FirestoreService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/FirestoreService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/MongoDBManager.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/model/ScrapingJob.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/model/ScrapingJob.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/repository/FirestoreScrapingJobRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/repository/FirestoreScrapingJobRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/repository/ScraperTypeConfigRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/repository/ScraperTypeConfigRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/repository/ScrapingJobRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/repository/ScrapingJobRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/model/Logger.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/model/Logger.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/model/ScraperTypeConfig.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/model/ScraperTypeConfig.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/Application.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/Server.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/Server.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/di/KoinModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/di/KoinModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/di/SystemHealthChecker.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/di/SystemHealthChecker.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/env/EnvironmentManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/env/EnvironmentManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/monitoring/SystemMonitor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/monitoring/SystemMonitor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/ScrapingJobRoutes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/ScrapingJobRoutes.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/ServerRouting.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/ServerRouting.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/UtilRoutes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/UtilRoutes.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/VacancyRoutes.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/BaseTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/BaseTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/GeneralRoutesTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/GeneralRoutesTest.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,98 +93,99 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Docker.Dockerfile.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.docker-compose.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
-    &quot;Gradle.ApplicationTest.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.Build crudfather.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build ktor-hello.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build ktor-scrap.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.DynamicRoutesTest.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.DynamicRoutesTest.testCreateDynamicDocument.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.DynamicRoutesTest.testCreateDynamicRoutes.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.DynamicRoutesTest.testDeleteDynamicRoutes.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.DynamicRoutesTest.testDynamicRoutes.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.DynamicRoutesTest.testGetAllDynamicDocuments.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.DynamicRoutesTest.testGetDynamicDocumentById.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.DynamicRoutesTest.testReadDynamicRoutes.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.DynamicRoutesTest.testUpdateDynamicDocument.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.DynamicRoutesTest.testUpdateDynamicRoutes.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.GeneralRoutesTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.GeneralRoutesTest.testLiveRoute.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Load Gradle Dependencies.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ModelRoutesTest.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.ModelRoutesTest.testCreateModel.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ModelRoutesTest.testGetAllModels.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.ModelRoutesTest.testGetModelById.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.MyTestClass.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.ServerRoutingTesting.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ServerRoutingTesting.testCreateModel.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.Upgrade Gradle wrapper.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [app:tasks].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [assembleDist].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [assemble].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [buildEnvironment].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [buildFatJar].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [dokkaHtmlJar].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.crudfather [dokkaHtml].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.crudfather [init].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [javadoc].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [ktlintFormat].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [runFatJar].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [runShadow].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [run].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [startShadowScripts].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.crudfather [test].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ktor-hello [:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ktor-hello [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ktor-hello [installDist].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ktor-hello [ktlintFormat].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.ktor-hello [run].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.ktor-scrap [:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ktor-scrap [buildFatJar].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ktor-scrap [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ktorhello [run].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.ktorhello [test].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.run with env local.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.run with env.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.run without env.executor&quot;: &quot;Run&quot;,
-    &quot;JAR Application.app.jar.executor&quot;: &quot;Debug&quot;,
-    &quot;JAR Application.crudfather-0.0.6-javadoc.jar.executor&quot;: &quot;Run&quot;,
-    &quot;JAR Application.fat.jar.executor&quot;: &quot;Debug&quot;,
-    &quot;Kotlin script (Beta).build.gradle.kts.executor&quot;: &quot;Debug&quot;,
-    &quot;Kotlin script (Beta).settings.gradle.kts.executor&quot;: &quot;Debug&quot;,
-    &quot;Kotlin.ApiTestKt.executor&quot;: &quot;Debug&quot;,
-    &quot;Kotlin.ApplicationKt.executor&quot;: &quot;Debug&quot;,
-    &quot;Kotlin.MainKt (1).executor&quot;: &quot;Debug&quot;,
-    &quot;Kotlin.MainKt.executor&quot;: &quot;Debug&quot;,
-    &quot;Kotlin.ModelDefinitionKt.executor&quot;: &quot;Debug&quot;,
-    &quot;Kotlin.ModelSchemeRepositoryKt.executor&quot;: &quot;Debug&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/lenyk/projects/Kotlin/onelenykproject/ktor-scrap&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Dependencies&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;DockerRegistry&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Docker.Dockerfile.executor": "Run",
+    "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "false",
+    "Gradle.ApplicationTest.executor": "Debug",
+    "Gradle.Build crudfather.executor": "Run",
+    "Gradle.Build ktor-hello.executor": "Run",
+    "Gradle.Build ktor-scrap.executor": "Run",
+    "Gradle.DynamicRoutesTest.executor": "Debug",
+    "Gradle.DynamicRoutesTest.testCreateDynamicDocument.executor": "Debug",
+    "Gradle.DynamicRoutesTest.testCreateDynamicRoutes.executor": "Debug",
+    "Gradle.DynamicRoutesTest.testDeleteDynamicRoutes.executor": "Debug",
+    "Gradle.DynamicRoutesTest.testDynamicRoutes.executor": "Debug",
+    "Gradle.DynamicRoutesTest.testGetAllDynamicDocuments.executor": "Run",
+    "Gradle.DynamicRoutesTest.testGetDynamicDocumentById.executor": "Debug",
+    "Gradle.DynamicRoutesTest.testReadDynamicRoutes.executor": "Debug",
+    "Gradle.DynamicRoutesTest.testUpdateDynamicDocument.executor": "Debug",
+    "Gradle.DynamicRoutesTest.testUpdateDynamicRoutes.executor": "Debug",
+    "Gradle.GeneralRoutesTest.executor": "Run",
+    "Gradle.GeneralRoutesTest.testLiveRoute.executor": "Run",
+    "Gradle.Load Gradle Dependencies.executor": "Run",
+    "Gradle.ModelRoutesTest.executor": "Debug",
+    "Gradle.ModelRoutesTest.testCreateModel.executor": "Run",
+    "Gradle.ModelRoutesTest.testGetAllModels.executor": "Debug",
+    "Gradle.ModelRoutesTest.testGetModelById.executor": "Debug",
+    "Gradle.MyTestClass.executor": "Debug",
+    "Gradle.ServerRoutingTesting.executor": "Run",
+    "Gradle.ServerRoutingTesting.testCreateModel.executor": "Debug",
+    "Gradle.Upgrade Gradle wrapper.executor": "Run",
+    "Gradle.crudfather [:clean].executor": "Run",
+    "Gradle.crudfather [app:tasks].executor": "Run",
+    "Gradle.crudfather [assembleDist].executor": "Run",
+    "Gradle.crudfather [assemble].executor": "Run",
+    "Gradle.crudfather [buildEnvironment].executor": "Run",
+    "Gradle.crudfather [buildFatJar].executor": "Run",
+    "Gradle.crudfather [build].executor": "Run",
+    "Gradle.crudfather [dokkaHtmlJar].executor": "Debug",
+    "Gradle.crudfather [dokkaHtml].executor": "Debug",
+    "Gradle.crudfather [init].executor": "Run",
+    "Gradle.crudfather [javadoc].executor": "Run",
+    "Gradle.crudfather [ktlintFormat].executor": "Run",
+    "Gradle.crudfather [runFatJar].executor": "Run",
+    "Gradle.crudfather [runShadow].executor": "Run",
+    "Gradle.crudfather [run].executor": "Run",
+    "Gradle.crudfather [startShadowScripts].executor": "Run",
+    "Gradle.crudfather [test].executor": "Run",
+    "Gradle.ktor-hello [:clean].executor": "Run",
+    "Gradle.ktor-hello [build].executor": "Run",
+    "Gradle.ktor-hello [installDist].executor": "Run",
+    "Gradle.ktor-hello [ktlintFormat].executor": "Debug",
+    "Gradle.ktor-hello [run].executor": "Debug",
+    "Gradle.ktor-scrap [:clean].executor": "Run",
+    "Gradle.ktor-scrap [buildFatJar].executor": "Run",
+    "Gradle.ktor-scrap [build].executor": "Run",
+    "Gradle.ktor-scrap [test].executor": "Run",
+    "Gradle.ktorhello [run].executor": "Debug",
+    "Gradle.ktorhello [test].executor": "Debug",
+    "Gradle.run with env local.executor": "Debug",
+    "Gradle.run with env.executor": "Debug",
+    "Gradle.run without env.executor": "Debug",
+    "JAR Application.app.jar.executor": "Debug",
+    "JAR Application.crudfather-0.0.6-javadoc.jar.executor": "Run",
+    "JAR Application.fat.jar.executor": "Debug",
+    "Kotlin script (Beta).build.gradle.kts.executor": "Debug",
+    "Kotlin script (Beta).settings.gradle.kts.executor": "Debug",
+    "Kotlin.ApiTestKt.executor": "Debug",
+    "Kotlin.ApplicationKt.executor": "Debug",
+    "Kotlin.MainKt (1).executor": "Debug",
+    "Kotlin.MainKt.executor": "Debug",
+    "Kotlin.ModelDefinitionKt.executor": "Debug",
+    "Kotlin.ModelSchemeRepositoryKt.executor": "Debug",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/lenyk/projects/Kotlin/onelenykproject/ktor-scrap",
+    "project.structure.last.edited": "Dependencies",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "DockerRegistry",
+    "show.migrate.to.gradle.popup": "false"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/features/vacanciesandroid/model" />
@@ -212,11 +195,11 @@
       <recent name="$PROJECT_DIR$/app/src" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorhello/features" />
       <recent name="$PROJECT_DIR$/src/main/resources" />
-      <recent name="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorhello/domain" />
       <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/main/" />
+      <recent name="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorhello/features" />
+      <recent name="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorhello/domain" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
       <recent name="dev.onelenyk.crudfather.domain.models" />
@@ -243,23 +226,28 @@
       <command value="gradle app:tasks" />
       <command value="gradle runFatJar" />
       <command value="gradle assemble" />
-      <command value="gradle test" />
       <command value="gradle run" />
       <command value="gradle ktlintFormat" />
       <command value="gradle installDist" />
       <command value="gradle build" />
       <command value="gradle buildFatJar" />
       <command value="gradle :clean" />
+      <command value="gradle test" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.run with env local">
+  <component name="RunManager" selected="Gradle.ktor-scrap [test]">
     <configuration default="true" type="Application" factoryName="Application">
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ktor-scrap [:clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="GeneralRoutesTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
+        <option name="env">
+          <map>
+            <entry key="DEVELOPER_DIR" value="/Applications/Xcode.app/Contents/Developer" />
+          </map>
+        </option>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
@@ -269,19 +257,26 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value=":clean" />
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;GeneralRoutesTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
+      <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="ktor-scrap [buildFatJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="ktor-scrap [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
+        <option name="env">
+          <map>
+            <entry key="DEVELOPER_DIR" value="/Applications/Xcode.app/Contents/Developer" />
+          </map>
+        </option>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
@@ -291,7 +286,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="buildFatJar" />
+            <option value="test" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -332,6 +327,11 @@
     </configuration>
     <configuration name="run with env" type="GradleRunConfiguration" factoryName="Gradle">
       <ExternalSystemSettings>
+        <option name="env">
+          <map>
+            <entry key="DEVELOPER_DIR" value="/Applications/Xcode.app/Contents/Developer" />
+          </map>
+        </option>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
@@ -355,6 +355,11 @@
     </configuration>
     <configuration name="run without env" type="GradleRunConfiguration" factoryName="Gradle">
       <ExternalSystemSettings>
+        <option name="env">
+          <map>
+            <entry key="DEVELOPER_DIR" value="/Applications/Xcode.app/Contents/Developer" />
+          </map>
+        </option>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
@@ -405,17 +410,17 @@
       <item itemvalue="Gradle.run with env" />
       <item itemvalue="Gradle.run with env local" />
       <item itemvalue="Gradle.run without env" />
-      <item itemvalue="Gradle.ktor-scrap [:clean]" />
-      <item itemvalue="Gradle.ktor-scrap [buildFatJar]" />
+      <item itemvalue="Gradle.GeneralRoutesTest" />
+      <item itemvalue="Gradle.ktor-scrap [test]" />
       <item itemvalue="Kotlin.ApplicationKt" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.GeneralRoutesTest" />
+        <item itemvalue="Gradle.ktor-scrap [test]" />
         <item itemvalue="Kotlin.ApplicationKt" />
         <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
         <item itemvalue="Docker.Dockerfile" />
-        <item itemvalue="Gradle.ktor-scrap [:clean]" />
-        <item itemvalue="Gradle.ktor-scrap [buildFatJar]" />
       </list>
     </recent_temporary>
   </component>
@@ -626,6 +631,59 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/env/EnvironmentManager.kt</url>
+          <line>22</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/env/EnvironmentManager.kt</url>
+          <line>20</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
+          <line>33</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
+          <line>32</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
+          <line>42</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
+          <line>41</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
+          <line>29</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/FirestoreService.kt</url>
+          <line>16</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/FirestoreService.kt</url>
+          <line>15</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="dart-exception" />
       </default-breakpoints>

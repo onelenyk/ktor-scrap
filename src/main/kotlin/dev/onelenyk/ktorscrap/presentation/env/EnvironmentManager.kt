@@ -5,32 +5,24 @@ import ru.inforion.lab403.common.logging.logger
 
 object EnvironmentManager {
     private val log = logger(TRACE)
+    private lateinit var envConfig: EnvConfig
+
+    fun load(args: Array<String>) {
+        envConfig = EnvConfig.load(args)
+        log.info { "Environment loaded: ${envConfig.properties.keys}" }
+    }
 
     fun getPort(): Int {
-        return getEnvOrProperty("PORT")?.toInt() ?: 8080
+        return envConfig.get("PORT")?.toInt() ?: 8080
     }
 
     fun getDbCredentials(): DbCredentials {
-        val username = getEnvOrProperty("DB_USERNAME") ?: ""
-        val password = getEnvOrProperty("DB_PASSWORD") ?: ""
-        val connection = getEnvOrProperty("DB_CONNECTION") ?: ""
-        val firestoreProjectId = getEnvOrProperty("FIRESTORE_PROJECT_ID") ?: ""
+        val firestoreProjectId = envConfig.get("FIRESTORE_PROJECT_ID") ?: ""
 
-        if (username.isBlank() || password.isBlank() || connection.isBlank()) {
-            log.warning { "Missing database credentials in environment variables" }
-        }
-
-        return DbCredentials(username, password, connection, firestoreProjectId)
-    }
-
-    private fun getEnvOrProperty(key: String): String? {
-        return System.getenv(key) ?: System.getProperty(key)
+        return DbCredentials(firestoreProjectId)
     }
 }
 
 data class DbCredentials(
-    val username: String,
-    val password: String,
-    val connection: String,
     val firestoreProjectId: String,
 )

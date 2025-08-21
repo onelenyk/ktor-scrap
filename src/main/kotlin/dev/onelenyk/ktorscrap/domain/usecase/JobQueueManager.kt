@@ -1,8 +1,5 @@
 package dev.onelenyk.ktorscrap.domain.usecase
 
-import com.mongodb.client.model.changestream.OperationType
-import com.mongodb.kotlin.client.coroutine.MongoCollection
-import dev.onelenyk.ktorscrap.data.db.MongoDBManager
 import dev.onelenyk.ktorscrap.data.model.JobStatus
 import dev.onelenyk.ktorscrap.data.model.ScrapingJob
 import dev.onelenyk.ktorscrap.data.repository.ScrapingJobRepository
@@ -17,15 +14,9 @@ class JobQueueManager(
     private val repository: ScrapingJobRepository,
     private val jobProcessor: JobProcessor,
     private val coroutineScope: CoroutineScope,
-    private val mongoDBManager: MongoDBManager,
 ) {
-    private val collection: MongoCollection<ScrapingJob> by lazy {
-        mongoDBManager.getCollection("scraping_jobs", ScrapingJob::class.java)
-    }
-
     init {
-        //  startMonitoring()
-        startWatcher()
+        startMonitoring()
         coroutineScope.launch {
             processExistingJobs()
         }
@@ -36,10 +27,10 @@ class JobQueueManager(
             while (true) {
                 try {
                     // Get all pending jobs
-                    val pendingJobs = repository.readAll().filter { it.status == JobStatus.PENDING }
+                    val pendingJobs = repository.getAll().filter { it.status == JobStatus.PENDING }
 
                     // Send each pending job to the processor
-                    pendingJobs.forEach { job ->
+                    pendingJobs.forEach { job: ScrapingJob ->
                         jobProcessor.addJob(job)
                     }
 
@@ -58,10 +49,10 @@ class JobQueueManager(
     private suspend fun processExistingJobs() {
         try {
             // Get all pending jobs
-            val pendingJobs = repository.readAll().filter { it.status == JobStatus.PENDING }
+            val pendingJobs = repository.getAll().filter { it.status == JobStatus.PENDING }
 
             // Send each pending job to the processor
-            pendingJobs.forEach { job ->
+            pendingJobs.forEach { job: ScrapingJob ->
                 jobProcessor.addJob(job)
             }
         } catch (e: Exception) {
@@ -74,30 +65,5 @@ class JobQueueManager(
         val job = repository.createJob(source)
         jobProcessor.addJob(job)
         return job
-    }
-
-    private fun startWatcher() {
-        coroutineScope.launch {
-            try {
-                collection.watch().collect { change ->
-                    when (change.operationType) {
-                        OperationType.INSERT -> {
-                            val newJob = change.fullDocument
-                            if (newJob != null) {
-                                jobProcessor.addJob(newJob)
-                            }
-                        }
-
-                        else -> {} // Ignore other operations
-                    }
-                }
-            } catch (e: Exception) {
-                println("Error in MongoDB watcher: ${e.message}")
-                e.printStackTrace()
-                // Attempt to restart watcher after a delay
-                delay(5000)
-                startWatcher()
-            }
-        }
     }
 }

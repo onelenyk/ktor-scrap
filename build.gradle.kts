@@ -49,7 +49,6 @@ dependencies {
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
 
-    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.1")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
     implementation("io.ktor:ktor-server-request-validation:$ktorVersion")
 
@@ -60,7 +59,6 @@ dependencies {
 
     // Firebase Admin SDK
     implementation("com.google.firebase:firebase-admin:9.2.0")
-    implementation("com.google.firebase:firebase-firestore-ktx")
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     // Serialization
@@ -70,6 +68,7 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation("io.mockk:mockk:1.13.8")
 
     // JSoup for web scraping
     implementation("org.jsoup:jsoup:1.17.2")
