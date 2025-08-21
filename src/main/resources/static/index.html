@@ -26,13 +26,14 @@
         .group-start td {
             border-top: 2px solid #6c757d;
         }
-        .source-color-0 { background-color: #f8d7da; }
-        .source-color-1 { background-color: #d1e7dd; }
-        .source-color-2 { background-color: #cfe2ff; }
-        .source-color-3 { background-color: #fff3cd; }
-        .source-color-4 { background-color: #f8f9fa; }
-        .source-color-5 { background-color: #e9ecef; }
-        .source-color-6 { background-color: #d6d8db; }
+        /* A more distinct color palette for sources */
+        .source-color-0 { background-color: #e0f7fa; } /* Light Cyan */
+        .source-color-1 { background-color: #fff9c4; } /* Light Yellow */
+        .source-color-2 { background-color: #f1f8e9; } /* Light Green */
+        .source-color-3 { background-color: #fce4ec; } /* Light Pink */
+        .source-color-4 { background-color: #ede7f6; } /* Light Purple */
+        .source-color-5 { background-color: #fff3e0; } /* Light Orange */
+        .source-color-6 { background-color: #e3f2fd; } /* Light Blue */
         .modal-body pre {
             max-height: 400px;
             overflow-y: auto;
@@ -260,16 +261,6 @@
                 .catch(error => showResponse(`Error restarting job: ${error}`, 'danger'));
         }
 
-        function simpleHash(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                const char = str.charCodeAt(i);
-                hash = (hash << 5) - hash + char;
-                hash |= 0; // Convert to 32bit integer
-            }
-            return Math.abs(hash);
-        }
-
         function fetchJobs() {
             const done = showLoading(document.getElementById('refreshJobs'));
             jobsTableBody.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
@@ -281,10 +272,8 @@
                 .then(jobs => {
                     const statusOrder = { 'PROCESSING': 1, 'PENDING': 2 };
                     jobs.sort((a, b) => {
-                        // Primary sort by source name
                         if (a.source.name < b.source.name) return -1;
                         if (a.source.name > b.source.name) return 1;
-                        // Secondary sort by status
                         const orderA = statusOrder[a.status] || 3;
                         const orderB = statusOrder[b.status] || 3;
                         return orderA - orderB;
@@ -297,17 +286,23 @@
                     }
 
                     let lastSource = null;
+                    const sourceColorMap = new Map();
+                    let colorIndex = 0;
+
                     jobs.forEach(job => {
                         const row = document.createElement('tr');
                         const status = job.status || 'UNKNOWN';
                         
-                        // Visual grouping
                         if (job.source.name !== lastSource) {
                             row.classList.add('group-start');
                             lastSource = job.source.name;
                         }
-                        const colorIndex = simpleHash(job.source.name) % 7;
-                        row.classList.add(`source-color-${colorIndex}`);
+
+                        if (!sourceColorMap.has(job.source.name)) {
+                            sourceColorMap.set(job.source.name, colorIndex++);
+                        }
+                        const currentColorIndex = sourceColorMap.get(job.source.name) % 7; // Cycle through 7 colors
+                        row.classList.add(`source-color-${currentColorIndex}`);
 
                         const updatedAt = new Date(job.updatedAt * 1000).toLocaleString();
                         row.innerHTML = `
