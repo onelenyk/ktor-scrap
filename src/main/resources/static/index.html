@@ -70,7 +70,7 @@
         }
         .modal-content {
             background-color: #fefefe;
-            margin: 15% auto;
+            margin: 10% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
@@ -87,6 +87,10 @@
             text-decoration: none;
             cursor: pointer;
         }
+        #addJobJson {
+            width: 100%;
+            height: 200px;
+        }
     </style>
 </head>
 <body>
@@ -95,6 +99,7 @@
         <button id="startScraping">Start Scraping Default Jobs</button>
         <button id="refreshJobs">Refresh Jobs List</button>
         <button id="removeAllJobs">Remove All Jobs</button>
+        <button id="addJobBtn">Add Custom Job</button>
     </div>
 
     <h2>Response from Actions:</h2>
@@ -118,36 +123,118 @@
         </tbody>
     </table>
 
-    <!-- The Modal -->
+    <!-- Result Modal -->
     <div id="resultModal" class="modal">
       <div class="modal-content">
-        <span class="close">&times;</span>
+        <span class="close" id="closeResultModal">&times;</span>
         <h2>Scraping Result</h2>
         <pre id="modal-content-data"></pre>
       </div>
     </div>
 
+    <!-- Add Job Modal -->
+    <div id="addJobModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeAddJobModal">&times;</span>
+            <h2>Add New Scraping Job</h2>
+            <label for="predefinedTargets">Select a predefined target:</label>
+            <select id="predefinedTargets">
+                <option value="">-- Select a target --</option>
+            </select>
+            <br><br>
+            <label for="addJobJson">Job JSON:</label>
+            <textarea id="addJobJson"></textarea>
+            <br><br>
+            <button id="submitNewJob">Submit Job</button>
+        </div>
+    </div>
+
     <script>
         const responseElement = document.getElementById('response');
         const jobsTableBody = document.querySelector('#jobsTable tbody');
-        const modal = document.getElementById('resultModal');
-        const modalContent = document.getElementById('modal-content-data');
-        const closeModal = document.querySelector('.close');
 
-        // Close the modal
-        closeModal.onclick = () => {
-            modal.style.display = "none";
-        }
+        // Modals
+        const resultModal = document.getElementById('resultModal');
+        const addJobModal = document.getElementById('addJobModal');
+        const modalContent = document.getElementById('modal-content-data');
+
+        // Close buttons
+        document.getElementById('closeResultModal').onclick = () => resultModal.style.display = "none";
+        document.getElementById('closeAddJobModal').onclick = () => addJobModal.style.display = "none";
         window.onclick = (event) => {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
+            if (event.target == resultModal) resultModal.style.display = "none";
+            if (event.target == addJobModal) addJobModal.style.display = "none";
         }
+
+        // "Add Job" modal elements
+        const addJobBtn = document.getElementById('addJobBtn');
+        const predefinedTargetsSelect = document.getElementById('predefinedTargets');
+        const addJobJsonTextarea = document.getElementById('addJobJson');
+        const submitNewJobBtn = document.getElementById('submitNewJob');
+        let predefinedTargets = [];
+
+        addJobBtn.onclick = () => {
+            addJobModal.style.display = "block";
+            // Fetch predefined targets if not already fetched
+            if (predefinedTargets.length === 0) {
+                fetch('/api/default-targets')
+                    .then(response => response.json())
+                    .then(targets => {
+                        predefinedTargets = targets;
+                        predefinedTargetsSelect.innerHTML = '<option value="">-- Select a target --</option>';
+                        targets.forEach((target, index) => {
+                            const option = document.createElement('option');
+                            option.value = index;
+                            option.textContent = target.name;
+                            predefinedTargetsSelect.appendChild(option);
+                        });
+                    });
+            }
+        };
+
+        predefinedTargetsSelect.onchange = () => {
+            const selectedIndex = predefinedTargetsSelect.value;
+            if (selectedIndex) {
+                addJobJsonTextarea.value = JSON.stringify(predefinedTargets[selectedIndex], null, 2);
+            } else {
+                addJobJsonTextarea.value = '';
+            }
+        };
+
+        submitNewJobBtn.onclick = () => {
+            const jobJson = addJobJsonTextarea.value;
+            if (!jobJson) {
+                alert('Job JSON cannot be empty.');
+                return;
+            }
+
+            try {
+                const jobData = JSON.parse(jobJson);
+                responseElement.textContent = 'Submitting new job...';
+                fetch('/api/jobs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(jobData)
+                })
+                .then(response => response.json())
+                .then(newJob => {
+                    responseElement.textContent = `New job created successfully. ID: ${newJob.uuid}`;
+                    addJobModal.style.display = "none";
+                    fetchJobs();
+                })
+                .catch(error => {
+                    responseElement.textContent = `Error creating job: ${error}`;
+                });
+            } catch (e) {
+                alert('Invalid JSON in the text area.');
+            }
+        };
+
 
         // Function to view job result
         function viewResult(jobId) {
             modalContent.textContent = 'Loading...';
-            modal.style.display = "block";
+            resultModal.style.display = "block";
 
             fetch(`/api/jobs/${jobId}`)
                 .then(response => response.json())
@@ -167,18 +254,13 @@
 
         // Function to remove a job
         function removeJob(jobId) {
-            if (!confirm(`Are you sure you want to remove job ${jobId}?`)) {
-                return;
-            }
-
+            if (!confirm(`Are you sure you want to remove job ${jobId}?`)) return;
             responseElement.textContent = `Removing job ${jobId}...`;
-            fetch(`/api/jobs/${jobId}`, {
-                method: 'DELETE'
-            })
+            fetch(`/api/jobs/${jobId}`, { method: 'DELETE' })
             .then(response => {
                 if (response.ok) {
                     responseElement.textContent = `Job ${jobId} removed successfully.`;
-                    fetchJobs(); // Refresh the list
+                    fetchJobs();
                 } else {
                     throw new Error(`Failed to remove job. Status: ${response.status}`);
                 }
@@ -191,23 +273,19 @@
         // Function to restart a job
         function restartJob(jobId) {
             responseElement.textContent = `Restarting job ${jobId}...`;
-            // First, get the job details to get the source
             fetch(`/api/jobs/${jobId}`)
                 .then(response => response.json())
                 .then(job => {
-                    // Now, create a new job with the same source
                     return fetch('/api/jobs', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(job.source)
                     });
                 })
                 .then(response => response.json())
                 .then(newJob => {
                     responseElement.textContent = `Job restarted successfully. New job ID: ${newJob.uuid}`;
-                    fetchJobs(); // Refresh the list
+                    fetchJobs();
                 })
                 .catch(error => {
                     responseElement.textContent = `Error restarting job: ${error}`;
@@ -216,18 +294,13 @@
 
         // Function to remove all jobs
         function removeAllJobs() {
-            if (!confirm('Are you sure you want to remove ALL jobs? This action cannot be undone.')) {
-                return;
-            }
-
+            if (!confirm('Are you sure you want to remove ALL jobs? This action cannot be undone.')) return;
             responseElement.textContent = 'Removing all jobs...';
-            fetch('/api/jobs/all', {
-                method: 'DELETE'
-            })
+            fetch('/api/jobs/all', { method: 'DELETE' })
             .then(response => response.json())
             .then(data => {
                 responseElement.textContent = `${data.deleted_count} jobs removed successfully.`;
-                fetchJobs(); // Refresh the list
+                fetchJobs();
             })
             .catch(error => {
                 responseElement.textContent = `Error removing all jobs: ${error}`;
@@ -239,28 +312,21 @@
             jobsTableBody.innerHTML = '<tr><td colspan="7">Loading...</td></tr>';
             fetch('/api/jobs')
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     return response.json();
                 })
                 .then(jobs => {
-                    // Sort jobs by status
                     const statusOrder = { 'PROCESSING': 1, 'PENDING': 2 };
-                    jobs.sort((a, b) => {
-                        const orderA = statusOrder[a.status] || 3;
-                        const orderB = statusOrder[b.status] || 3;
-                        return orderA - orderB;
-                    });
+                    jobs.sort((a, b) => (statusOrder[a.status] || 3) - (statusOrder[b.status] || 3));
 
-                    jobsTableBody.innerHTML = ''; // Clear loading message
+                    jobsTableBody.innerHTML = '';
                     if (jobs.length === 0) {
                         jobsTableBody.innerHTML = '<tr><td colspan="7">No jobs found.</td></tr>';
                         return;
                     }
                     jobs.forEach(job => {
                         const row = document.createElement('tr');
-                        row.className = `status-${job.status}`; // Add status class for highlighting
+                        row.className = `status-${job.status}`;
                         const createdAt = new Date(job.createdAt * 1000).toLocaleString();
                         const updatedAt = new Date(job.updatedAt * 1000).toLocaleString();
                         row.innerHTML = `
@@ -284,7 +350,7 @@
                 });
         }
 
-        // Event listener for starting scraping
+        // Event listeners
         document.getElementById('startScraping').addEventListener('click', () => {
             responseElement.textContent = 'Adding jobs to the queue...';
             fetch('/api/default-jobs/add-all')
@@ -297,11 +363,7 @@
                     responseElement.textContent = 'Error: ' + error;
                 });
         });
-
-        // Event listener for refreshing jobs
         document.getElementById('refreshJobs').addEventListener('click', fetchJobs);
-
-        // Event listener for removing all jobs
         document.getElementById('removeAllJobs').addEventListener('click', removeAllJobs);
 
         // Initial load of jobs

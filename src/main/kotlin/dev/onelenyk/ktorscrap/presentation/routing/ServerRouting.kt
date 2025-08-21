@@ -15,6 +15,7 @@ class ServerRouting(
     fun registerRoutes(routing: Routing) {
         utilRoutes.registerRoutes(routing)
         routing.scrapingJobRoutes(repository, jobQueueManager)
+        routing.defaultTargetsRoutes()
         //  routing.scraperTypeConfigRoutes(scraperTypeConfigRepository)
         defaultJobsRoutes.registerRoutes(routing)
     }
