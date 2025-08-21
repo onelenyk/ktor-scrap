@@ -17,6 +17,10 @@
             cursor: pointer;
             margin: 5px;
         }
+        .action-button {
+            font-size: 1em;
+            padding: 5px 10px;
+        }
         pre {
             background-color: #f4f4f4;
             padding: 20px;
@@ -37,6 +41,51 @@
         }
         th {
             background-color: #f2f2f2;
+        }
+        /* Status highlighting */
+        .status-PROCESSING {
+            background-color: #e6f7ff; /* Light blue */
+        }
+        .status-PENDING {
+            background-color: #fffbe6; /* Light yellow */
+        }
+        .status-COMPLETED {
+            background-color: #f6ffed; /* Light green */
+        }
+        .status-FAILED {
+            background-color: #fff1f0; /* Light red */
+        }
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -60,6 +109,7 @@
                 <th>Created At</th>
                 <th>Updated At</th>
                 <th>Error</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -67,13 +117,105 @@
         </tbody>
     </table>
 
+    <!-- The Modal -->
+    <div id="resultModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Scraping Result</h2>
+        <pre id="modal-content-data"></pre>
+      </div>
+    </div>
+
     <script>
         const responseElement = document.getElementById('response');
         const jobsTableBody = document.querySelector('#jobsTable tbody');
+        const modal = document.getElementById('resultModal');
+        const modalContent = document.getElementById('modal-content-data');
+        const closeModal = document.querySelector('.close');
+
+        // Close the modal
+        closeModal.onclick = () => {
+            modal.style.display = "none";
+        }
+        window.onclick = (event) => {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Function to view job result
+        function viewResult(jobId) {
+            modalContent.textContent = 'Loading...';
+            modal.style.display = "block";
+
+            fetch(`/api/jobs/${jobId}`)
+                .then(response => response.json())
+                .then(job => {
+                    if (job.result && job.result.data) {
+                        modalContent.textContent = JSON.stringify(job.result.data.vacancies, null, 2);
+                    } else if (job.error) {
+                        modalContent.textContent = `Error: ${job.error}`;
+                    } else {
+                        modalContent.textContent = 'No result data available for this job.';
+                    }
+                })
+                .catch(error => {
+                    modalContent.textContent = `Error fetching job details: ${error}`;
+                });
+        }
+
+        // Function to remove a job
+        function removeJob(jobId) {
+            if (!confirm(`Are you sure you want to remove job ${jobId}?`)) {
+                return;
+            }
+
+            responseElement.textContent = `Removing job ${jobId}...`;
+            fetch(`/api/jobs/${jobId}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    responseElement.textContent = `Job ${jobId} removed successfully.`;
+                    fetchJobs(); // Refresh the list
+                } else {
+                    throw new Error(`Failed to remove job. Status: ${response.status}`);
+                }
+            })
+            .catch(error => {
+                responseElement.textContent = `Error: ${error}`;
+            });
+        }
+
+        // Function to restart a job
+        function restartJob(jobId) {
+            responseElement.textContent = `Restarting job ${jobId}...`;
+            // First, get the job details to get the source
+            fetch(`/api/jobs/${jobId}`)
+                .then(response => response.json())
+                .then(job => {
+                    // Now, create a new job with the same source
+                    return fetch('/api/jobs', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(job.source)
+                    });
+                })
+                .then(response => response.json())
+                .then(newJob => {
+                    responseElement.textContent = `Job restarted successfully. New job ID: ${newJob.uuid}`;
+                    fetchJobs(); // Refresh the list
+                })
+                .catch(error => {
+                    responseElement.textContent = `Error restarting job: ${error}`;
+                });
+        }
 
         // Function to fetch and display jobs
         function fetchJobs() {
-            jobsTableBody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
+            jobsTableBody.innerHTML = '<tr><td colspan="7">Loading...</td></tr>';
             fetch('/api/jobs')
                 .then(response => {
                     if (!response.ok) {
@@ -82,13 +224,22 @@
                     return response.json();
                 })
                 .then(jobs => {
+                    // Sort jobs by status
+                    const statusOrder = { 'PROCESSING': 1, 'PENDING': 2 };
+                    jobs.sort((a, b) => {
+                        const orderA = statusOrder[a.status] || 3;
+                        const orderB = statusOrder[b.status] || 3;
+                        return orderA - orderB;
+                    });
+
                     jobsTableBody.innerHTML = ''; // Clear loading message
                     if (jobs.length === 0) {
-                        jobsTableBody.innerHTML = '<tr><td colspan="6">No jobs found.</td></tr>';
+                        jobsTableBody.innerHTML = '<tr><td colspan="7">No jobs found.</td></tr>';
                         return;
                     }
                     jobs.forEach(job => {
                         const row = document.createElement('tr');
+                        row.className = `status-${job.status}`; // Add status class for highlighting
                         const createdAt = new Date(job.createdAt * 1000).toLocaleString();
                         const updatedAt = new Date(job.updatedAt * 1000).toLocaleString();
                         row.innerHTML = `
@@ -98,12 +249,17 @@
                             <td>${createdAt}</td>
                             <td>${updatedAt}</td>
                             <td>${job.error || ''}</td>
+                            <td>
+                                <button class="action-button" onclick="viewResult('${job.uuid}')">View</button>
+                                <button class="action-button" onclick="removeJob('${job.uuid}')">Remove</button>
+                                <button class="action-button" onclick="restartJob('${job.uuid}')">Restart</button>
+                            </td>
                         `;
                         jobsTableBody.appendChild(row);
                     });
                 })
                 .catch(error => {
-                    jobsTableBody.innerHTML = `<tr><td colspan="6">Error loading jobs: ${error}</td></tr>`;
+                    jobsTableBody.innerHTML = `<tr><td colspan="7">Error loading jobs: ${error}</td></tr>`;
                 });
         }
 
@@ -114,7 +270,6 @@
                 .then(response => response.json())
                 .then(data => {
                     responseElement.textContent = JSON.stringify(data, null, 2);
-                    // Refresh the jobs list after adding new ones
                     fetchJobs();
                 })
                 .catch(error => {

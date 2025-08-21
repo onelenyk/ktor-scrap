@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="68371057-438e-49e3-a253-dcec33f98a15" name="Changes" comment="feat(db): Migrate to Firestore and Refactor to Clean Architecture&#10;    2&#10;    3 This commit introduces a significant architectural refactoring to align with clean architecture principles and fully migrates the primary database&#10;      from MongoDB to Firestore.&#10;    4&#10;    5 **Key Changes:**&#10;    6&#10;    7 *   **Clean Architecture:**&#10;    8     *   The project structure is now organized into , , and  layers.&#10;    9     *   This separation of concerns improves modularity, testability, and maintainability.&#10;   10&#10;   11 *   **Firestore Integration:**&#10;   12     *   The application now uses Firestore as its primary database.&#10;   13     *   A generic  interface and  implementation have been created for reusable and type-safe database operations.&#10;   14     *   The  and  now use the .&#10;   15&#10;   16 *   **Data Models:**&#10;   17     *   An  interface has been introduced to ensure all database models have a consistent uid=501(lenyk) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),98(_lpadmin),701(com.apple.sharepoint.group.1),33(_appstore),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae) property, removing the need for&#10;      reflection.&#10;   18     *    and  now implement the  interface.&#10;   19&#10;   20 *   **Dependency Injection:**&#10;   21     *   The Koin module has been updated to provide the new Firestore-based services and repositories.&#10;   22     *   All MongoDB-related dependencies and configurations have been removed.&#10;   23&#10;   24 *   **Gemini AI Context:**&#10;   25     *   Added a  directory to store project-specific rules and plans for the Gemini AI agent.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/Server.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/Server.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -620,34 +620,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
-          <line>33</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
-          <line>32</line>
-          <properties>
-            <option name="lambda-ordinal" value="-1" />
-          </properties>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
           <line>42</line>
           <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
-          <line>41</line>
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
-          <line>29</line>
-          <properties>
-            <option name="lambda-ordinal" value="-1" />
-          </properties>
-          <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/FirestoreService.kt</url>
@@ -658,6 +632,35 @@
           <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/FirestoreService.kt</url>
           <line>15</line>
           <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
+          <line>29</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
+          <line>32</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
+          <line>37</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt</url>
+          <line>41</line>
+          <option name="timeStamp" value="21" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
