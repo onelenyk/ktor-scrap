@@ -5,32 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="68371057-438e-49e3-a253-dcec33f98a15" name="Changes" comment="feat: Implement concurrent job limit and in-memory repository toggle&#10;&#10;This commit introduces several enhancements:&#10;- A concurrent job limit for the `JobProcessor` to control resource usage.&#10;- The ability to switch between Firestore and an in-memory repository via a feature flag and API endpoints.&#10;- A new `index2.html` with a restyled, futuristic flat UI for the dashboard.&#10;- Testability improvements by creating a dedicated `testModule` for Ktor application testing.&#10;&#10;Key Changes:&#10;- **Concurrent Job Processing:**&#10;    - `JobProcessor` now uses a `Semaphore` to limit the number of concurrently running scraping jobs.&#10;    - The limit is configurable via the `CONCURRENT_JOB_LIMIT` environment variable in `EnvironmentManager` (defaults to 10).&#10;    - `koinModule` and `testKoinModule` updated to provide this limit to `JobProcessor`.&#10;- **Switchable Repository:**&#10;    - Introduced `FeatureFlag.useInMemoryRepository` to toggle between data storage.&#10;    - Added `InMemoryScrapingJobRepository` for an in-memory data store.&#10;    - Created `SwitchableScrapingJobRepository` that delegates to either Firestore or in-memory based on the feature flag.&#10;    - `koinModule` now provides the `SwitchableScrapingJobRepository`.&#10;    - `TestKoinModule` is updated to use `InMemoryScrapingJobRepository` by default.&#10;    - New API endpoints in `UtilRoutes`:&#10;        - `POST /toggle-in-memory-repo`: Toggles the repository implementation.&#10;        - `GET /repo-status`: Returns the current repository status.&#10;- **UI Enhancements (index.html &amp; index2.html):**&#10;    - `index.html`:&#10;        - Minor style updates (darker theme, improved modal/list item styling).&#10;        - Added buttons and status display for toggling the repository.&#10;        - Improved vacancy display with chips for company, location, and salary.&#10;        - Error handling for fetching predefined targets.&#10;    - `index2.html`: Added as a new alternative static landing page with a significant UI overhaul (&quot;futuristic flat theme&quot;). It includes the same functionality as `index.html` but with different styling.&#10;    - `Server.kt`: Added a route `/index2` to serve `index2.html`.&#10;- **Testing:**&#10;    - Created `TestApplication.kt` with a `testModule` function to simplify Ktor application setup in tests.&#10;    - `GeneralRoutesTest` now uses `testModule()` for application setup.&#10;- **Build Configuration:**&#10;    - Set Java source and target compatibility to version 21 in `build.gradle.kts`.&#10;- **Scraper Configuration:**&#10;    - Increased `pageLimit` for `DjinniScraper` from 1 to 5.&#10;- **Minor:**&#10;    - `JobQueueManager`: Commented out `startMonitoring()` in `init` block.">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/repository/FeatureFlag.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/repository/InMemoryScrapingJobRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/repository/SwitchableScrapingJobRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/index2.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/TestApplication.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/docker-publish.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/docker-publish.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-spec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/api-spec.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/FirestoreDatabase.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/FirestoreDatabase.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/repository/ScraperTypeConfigRepository.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/scraper/DjinniScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/scraper/DjinniScraper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobProcessor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobProcessor.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/domain/usecase/JobQueueManager.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/Server.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/Server.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/di/KoinModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/di/KoinModule.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/env/EnvironmentManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/env/EnvironmentManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/plugins/SwaggerConfig.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/plugins/SwaggerConfig.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/ScraperTypeConfigRoutes.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/ServerRouting.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/ServerRouting.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/UtilRoutes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/routing/UtilRoutes.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/GeneralRoutesTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/GeneralRoutesTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/TestKoinModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/TestKoinModule.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,17 +35,7 @@
         </task>
         <projects_view>
           <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="ktor-scrap" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="ktor-scrap" type="f1a62948:ProjectNode" />
-                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
-              </path>
-            </expand>
+            <expand />
             <select />
           </tree_state>
         </projects_view>
@@ -149,6 +118,7 @@
     &quot;Gradle.ktor-scrap [buildFatJar].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.ktor-scrap [build].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.ktor-scrap [ktlintFormat].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ktor-scrap [shadowJar].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.ktor-scrap [test].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.ktorhello [run].executor&quot;: &quot;Debug&quot;,
     &quot;Gradle.ktorhello [test].executor&quot;: &quot;Debug&quot;,
@@ -162,6 +132,7 @@
     &quot;Kotlin script (Beta).settings.gradle.kts.executor&quot;: &quot;Debug&quot;,
     &quot;Kotlin.ApiTestKt.executor&quot;: &quot;Debug&quot;,
     &quot;Kotlin.ApplicationKt.executor&quot;: &quot;Debug&quot;,
+    &quot;Kotlin.EncodeServiceAccountKeyKt.executor&quot;: &quot;Debug&quot;,
     &quot;Kotlin.MainKt (1).executor&quot;: &quot;Debug&quot;,
     &quot;Kotlin.MainKt.executor&quot;: &quot;Debug&quot;,
     &quot;Kotlin.ModelDefinitionKt.executor&quot;: &quot;Debug&quot;,
@@ -174,7 +145,9 @@
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHELLCHECK.PATH&quot;: &quot;/Users/lenyk/Library/Application Support/Google/AndroidStudio2025.1.2/plugins/Shell Script/shellcheck&quot;,
     &quot;Shell Script.build-docker.sh.executor&quot;: &quot;Run&quot;,
+    &quot;Shell Script.run-docker.sh.executor&quot;: &quot;Debug&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
@@ -197,8 +170,8 @@
       <recent name="$PROJECT_DIR$/app/src/main/kotlin" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/.gemini" />
       <recent name="$PROJECT_DIR$/src/main/resources" />
+      <recent name="$PROJECT_DIR$/.gemini" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/main/" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorhello/features" />
@@ -234,39 +207,11 @@
       <command value="gradle :clean" />
       <command value="gradle test" />
       <command value="gradle ktlintFormat" />
+      <command value="gradle shadowJar" />
       <command value="gradle buildFatJar" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.ktor-scrap [buildFatJar]">
-    <configuration name="GeneralRoutesTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="env">
-          <map>
-            <entry key="DEVELOPER_DIR" value="/Applications/Xcode.app/Contents/Developer" />
-          </map>
-        </option>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;GeneralRoutesTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Shell Script.build-docker.sh">
     <configuration name="ktor-scrap [buildFatJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -279,28 +224,6 @@
         <option name="taskNames">
           <list>
             <option value="buildFatJar" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="ktor-scrap [ktlintFormat]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="ktlintFormat" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -394,6 +317,13 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="EncodeServiceAccountKeyKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="dev.onelenyk.ktorscrap.utils.EncodeServiceAccountKeyKt" />
+      <module name="ktor-scrap.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="build-docker.sh" type="ShConfigurationType" temporary="true">
       <option name="SCRIPT_TEXT" value="" />
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
@@ -409,7 +339,22 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker Scrapper">
+    <configuration name="run-docker.sh" type="ShConfigurationType" temporary="true">
+      <option name="SCRIPT_TEXT" value="" />
+      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/run-docker.sh" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="/bin/bash" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="EXECUTE_IN_TERMINAL" value="true" />
+      <option name="EXECUTE_SCRIPT_FILE" value="true" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
       <deployment type="dockerfile">
         <settings>
           <option name="sourceFilePath" value="Dockerfile" />
@@ -423,17 +368,17 @@
       <item itemvalue="Gradle.run with env local" />
       <item itemvalue="Gradle.run without env" />
       <item itemvalue="Gradle.ktor-scrap [buildFatJar]" />
-      <item itemvalue="Gradle.ktor-scrap [ktlintFormat]" />
-      <item itemvalue="Gradle.GeneralRoutesTest" />
+      <item itemvalue="Kotlin.EncodeServiceAccountKeyKt" />
+      <item itemvalue="Shell Script.run-docker.sh" />
       <item itemvalue="Shell Script.build-docker.sh" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.ktor-scrap [buildFatJar]" />
-        <item itemvalue="Docker.Dockerfile" />
+        <item itemvalue="Shell Script.run-docker.sh" />
         <item itemvalue="Shell Script.build-docker.sh" />
-        <item itemvalue="Gradle.ktor-scrap [ktlintFormat]" />
-        <item itemvalue="Gradle.GeneralRoutesTest" />
+        <item itemvalue="Docker.Dockerfile" />
+        <item itemvalue="Gradle.ktor-scrap [buildFatJar]" />
+        <item itemvalue="Kotlin.EncodeServiceAccountKeyKt" />
       </list>
     </recent_temporary>
   </component>
@@ -647,12 +592,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/env/EnvironmentManager.kt</url>
-          <line>22</line>
+          <line>43</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/env/EnvironmentManager.kt</url>
-          <line>20</line>
+          <line>41</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
@@ -664,6 +609,16 @@
           <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/data/db/FirestoreService.kt</url>
           <line>15</line>
           <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/utils/EncodeServiceAccountKey.kt</url>
+          <line>16</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/dev/onelenyk/ktorscrap/presentation/env/EnvironmentManager.kt</url>
+          <line>52</line>
+          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

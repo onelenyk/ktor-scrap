@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . .
 # Using 'shadowJar' as it's a common and robust way to create fat jars.
 # If 'buildFatJar' is a custom task, it can be used instead.
-RUN gradle shadowJar --no-daemon
+RUN gradle buildFatJar --no-daemon
 
 # Run stage
 FROM eclipse-temurin:21-jre-alpine
@@ -20,8 +20,6 @@ COPY --from=build /app/build/libs/fat.jar app.jar
 # Change ownership of the application files to the non-root user
 RUN chown -R appuser:appgroup /app
 
-# Create an empty service-account-key.json and set permissions
-RUN touch /app/service-account-key.json && chown appuser:appgroup /app/service-account-key.json
 
 # Set the user to the non-root user
 USER appuser
@@ -41,5 +39,4 @@ LABEL org.opencontainers.image.title="Ktor Scrap" \
       org.opencontainers.image.licenses="MIT"
 
 # Run the application
-ENTRYPOINT ["/bin/sh", "-c"]
-CMD ["echo ""$GCP_SA_KEY"" > /app/service-account-key.json && java -jar app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

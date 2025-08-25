@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 // Define variables for project configurations
 val projectGroup = "dev.onelenyk"
 val appId = "ktorscrap"
@@ -109,6 +111,10 @@ tasks.shadowJar {
     archiveVersion.set( "" )
     destinationDirectory.set(file("build/libs"))
     archiveFileName.set("fat.jar")
+    mergeServiceFiles()
+    transform(com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer::class.java) {
+        resource = "META-INF/services/io.grpc.LoadBalancerProvider"
+    }
 }
 
 // dokka
