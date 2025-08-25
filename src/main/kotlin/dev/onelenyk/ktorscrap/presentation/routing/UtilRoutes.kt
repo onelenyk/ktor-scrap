@@ -1,5 +1,6 @@
 package dev.onelenyk.ktorscrap.presentation.routing
 
+import dev.onelenyk.ktorscrap.data.repository.FeatureFlag
 import dev.onelenyk.ktorscrap.presentation.di.SystemHealthChecker
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -8,6 +9,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 
 class UtilRoutes(val systemHealthChecker: SystemHealthChecker) {
     fun registerRoutes(routing: Routing) {
@@ -31,6 +33,17 @@ class UtilRoutes(val systemHealthChecker: SystemHealthChecker) {
                 } else {
                     call.respond(HttpStatusCode.InternalServerError, mapOf("firestore_test" to "FAILED"))
                 }
+            }
+
+            // Toggle in-memory repository
+            post("/toggle-in-memory-repo") {
+                FeatureFlag.useInMemoryRepository = !FeatureFlag.useInMemoryRepository
+                call.respond(HttpStatusCode.OK, mapOf("in_memory_repository" to FeatureFlag.useInMemoryRepository))
+            }
+
+            // Get repo status
+            get("/repo-status") {
+                call.respond(HttpStatusCode.OK, mapOf("in_memory_repository" to FeatureFlag.useInMemoryRepository))
             }
 
             // Serve static docs

@@ -3,8 +3,7 @@ package dev.onelenyk.ktorscrap.test
 import dev.onelenyk.ktorscrap.data.db.Database
 import dev.onelenyk.ktorscrap.data.db.FirestoreDatabase
 import dev.onelenyk.ktorscrap.data.db.FirestoreService
-import dev.onelenyk.ktorscrap.data.repository.FirestoreScrapingJobRepository
-import dev.onelenyk.ktorscrap.data.repository.ScraperTypeConfigRepository
+import dev.onelenyk.ktorscrap.data.repository.InMemoryScrapingJobRepository
 import dev.onelenyk.ktorscrap.data.repository.ScrapingJobRepository
 import dev.onelenyk.ktorscrap.data.scraper.AmoScraper
 import dev.onelenyk.ktorscrap.data.scraper.BreezyScraper
@@ -63,12 +62,11 @@ val testKoinModule =
         }
 
         // Repository
-        single<ScrapingJobRepository> { FirestoreScrapingJobRepository(get()) }
-        single { ScraperTypeConfigRepository(get()) }
+        single<ScrapingJobRepository> { InMemoryScrapingJobRepository() }
 
         // Job processing components
         single { JobOutputManager(get()) }
-        single { JobProcessor(get(), get()) }
+        single { JobProcessor(get(), get(), 5) }
         single { JobQueueManager(get(), get(), get()) }
 
         // Scrapers
@@ -83,7 +81,7 @@ val testKoinModule =
         // Routing
         single { UtilRoutes(get()) }
         single { DefaultJobsRoutes(get()) }
-        single { ServerRouting(get(), get(), get(), get(), get()) }
+        single { ServerRouting(get(), get(), get(), get()) }
     }
 
 @OptIn(DelicateCoroutinesApi::class)

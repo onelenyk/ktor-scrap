@@ -1,6 +1,5 @@
-import dev.onelenyk.ktorscrap.presentation.Server
 import dev.onelenyk.ktorscrap.presentation.env.EnvironmentManager
-import dev.onelenyk.ktorscrap.test.testKoinModule
+import dev.onelenyk.ktorscrap.test.testModule
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
@@ -29,7 +28,7 @@ class GeneralRoutesTest {
     fun testLiveRoute() =
         testApplication {
             application {
-                Server().module(this, testKoinModule)
+                testModule()
             }
             val response = client.get("/live")
             TestCase.assertEquals(HttpStatusCode.OK, response.status)
@@ -39,7 +38,7 @@ class GeneralRoutesTest {
     fun testRoutesRoute() =
         testApplication {
             application {
-                Server().module(this, testKoinModule)
+                testModule()
             }
             val response = client.get("/routes")
             TestCase.assertEquals(HttpStatusCode.OK, response.status)
@@ -49,7 +48,7 @@ class GeneralRoutesTest {
     fun testRootRoute() =
         testApplication {
             application {
-                Server().module(this, testKoinModule)
+                testModule()
             }
             val response = client.get("/hello")
             TestCase.assertEquals(HttpStatusCode.OK, response.status)
@@ -60,7 +59,7 @@ class GeneralRoutesTest {
     fun testFirestoreIntegrationRoute() =
         testApplication {
             application {
-                Server().module(this, testKoinModule)
+                testModule()
             }
             val response = client.get("/test/firestore")
             TestCase.assertEquals(HttpStatusCode.OK, response.status)

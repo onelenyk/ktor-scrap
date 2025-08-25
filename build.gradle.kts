@@ -13,6 +13,7 @@ plugins {
     application // Apply the application plugin to add support for building a CLI application in Java.
     kotlin("jvm") version "2.0.0"
     id("io.ktor.plugin") version "2.3.3"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 
     kotlin("plugin.serialization") version "2.0.0-RC1"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
@@ -21,6 +22,11 @@ plugins {
 
 group = projectGroup
 version = projectVersion
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
 
 repositories {
     mavenCentral()
@@ -90,16 +96,6 @@ tasks.withType<Jar> {
             ),
         )
     }
-
-    // Include all dependencies in the JAR
-    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-ktor {
-    fatJar {
-        archiveFileName.set("fat.jar")
-    }
 }
 
 tasks.shadowJar {
@@ -108,6 +104,11 @@ tasks.shadowJar {
         attributes["Implementation-Version"] = project.version
         attributes["Main-Class"] = mainAppClassName
     }
+    archiveBaseName.set( "app" )
+    archiveClassifier.set( "" )
+    archiveVersion.set( "" )
+    destinationDirectory.set(file("build/libs"))
+    archiveFileName.set("fat.jar")
 }
 
 // dokka

@@ -107,6 +107,9 @@ class Server {
             staticResources("/", "static") {
                 default("index.html")
             }
+            staticResources("/index2", "static") {
+                default("index2.html")
+            }
         }
     }
 }

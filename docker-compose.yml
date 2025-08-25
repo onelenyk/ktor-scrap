@@ -1,16 +1,45 @@
 version: '3.8'
 
+# This file is designed for use with CasaOS.
+#
+# How to use:
+# 1. Build your Docker image:
+#    docker build -t your-dockerhub-username/ktor-scrap:latest .
+#
+# 2. Push the image to Docker Hub:
+#    docker login
+#    docker push your-dockerhub-username/ktor-scrap:latest
+#
+# 3. In CasaOS:
+#    - Go to the App Store.
+#    - Click "Custom Install".
+#    - Paste the contents of this file into the compose file editor.
+#    - IMPORTANT: Update the 'image' line to use your Docker Hub username.
+#    - IMPORTANT: Fill in the environment variables with your actual credentials.
+#    - Click "Install".
+
 services:
-  app:
+  ktor-scrap:
+    # IMPORTANT: This will pull the image built by your GitHub Action.
+    # Replace 'your-github-username/your-repo-name' with your actual GitHub username and repository name.
+    # For example: ghcr.io/onelenyk/ktor-scrap:latest
+    image: ghcr.io/your-github-username/your-repo-name:latest
     container_name: ktor-scrap
-    build: .
+    restart: unless-stopped
     ports:
+      # Maps port 8080 on your CasaOS device to port 8080 inside the container.
+      # CasaOS will manage the host port, but this is the standard mapping.
       - "8080:8080"
     environment:
+      # The port the Ktor application will run on inside the container.
       - PORT=8080
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_CONNECTION=${DB_CONNECTION}
-    env_file:
-      - .env
-    restart: unless-stopped 
+      # --- IMPORTANT: SET YOUR ENVIRONMENT VARIABLES BELOW ---
+      - FIRESTORE_PROJECT_ID=your-firestore-project-id
+      - CONCURRENT_JOB_LIMIT=10
+    healthcheck:
+      # This uses the /live endpoint to ensure the application is healthy.
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:8080/live"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

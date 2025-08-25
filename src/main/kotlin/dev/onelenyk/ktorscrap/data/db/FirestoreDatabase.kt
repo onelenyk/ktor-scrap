@@ -14,8 +14,7 @@ class FirestoreDatabase(private val env: DbCredentials) {
     }
 
     private fun getServiceAccountKeyStream() =
-        this::class.java.classLoader.getResourceAsStream("service-account-key.json")
-            ?: throw IllegalStateException("service-account-key.json not found in classpath.")
+        java.io.FileInputStream("/app/service-account-key.json")
 
     private fun buildFirebaseOptions(credentials: GoogleCredentials): FirebaseOptions =
         FirebaseOptions.builder()

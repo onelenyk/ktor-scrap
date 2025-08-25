@@ -4,8 +4,9 @@ import dev.onelenyk.ktorscrap.data.db.Database
 import dev.onelenyk.ktorscrap.data.db.FirestoreDatabase
 import dev.onelenyk.ktorscrap.data.db.FirestoreService
 import dev.onelenyk.ktorscrap.data.repository.FirestoreScrapingJobRepository
-import dev.onelenyk.ktorscrap.data.repository.ScraperTypeConfigRepository
+import dev.onelenyk.ktorscrap.data.repository.InMemoryScrapingJobRepository
 import dev.onelenyk.ktorscrap.data.repository.ScrapingJobRepository
+import dev.onelenyk.ktorscrap.data.repository.SwitchableScrapingJobRepository
 import dev.onelenyk.ktorscrap.data.scraper.AmoScraper
 import dev.onelenyk.ktorscrap.data.scraper.BreezyScraper
 import dev.onelenyk.ktorscrap.data.scraper.DjinniScraper
@@ -27,6 +28,7 @@ import dev.onelenyk.ktorscrap.presentation.routing.UtilRoutes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val koinModule =
@@ -59,12 +61,18 @@ val koinModule =
         }
 
         // Repository
-        single<ScrapingJobRepository> { FirestoreScrapingJobRepository(get()) }
-        single { ScraperTypeConfigRepository(get()) }
+        single<ScrapingJobRepository> {
+            SwitchableScrapingJobRepository(
+                firestoreRepository = get(named("firestore")),
+                inMemoryRepository = get(named("inMemory")),
+            )
+        }
+        single<ScrapingJobRepository>(named("firestore")) { FirestoreScrapingJobRepository(get()) }
+        single<ScrapingJobRepository>(named("inMemory")) { InMemoryScrapingJobRepository() }
 
         // Job processing components
         single { JobOutputManager(get()) }
-        single { JobProcessor(get(), get()) }
+        single { JobProcessor(get(), get(), EnvironmentManager.getConcurrentJobLimit()) }
         single { JobQueueManager(get(), get(), get()) }
 
         // Scrapers
@@ -79,7 +87,7 @@ val koinModule =
         // Routing
         single { UtilRoutes(get()) }
         single { DefaultJobsRoutes(get()) }
-        single { ServerRouting(get(), get(), get(), get(), get()) }
+        single { ServerRouting(get(), get(), get(), get()) }
     }
 
 @OptIn(DelicateCoroutinesApi::class)

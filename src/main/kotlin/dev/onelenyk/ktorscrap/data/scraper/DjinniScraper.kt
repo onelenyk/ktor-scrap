@@ -5,7 +5,7 @@ import dev.onelenyk.ktorscrap.domain.repository.JobScraper
 import org.jsoup.Jsoup
 
 class DjinniScraper : JobScraper {
-    private val pageLimit = 1
+    private val pageLimit = 5
 
     override suspend fun scrape(
         target: ScrapeTarget,

@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -15,11 +16,13 @@ import java.util.concurrent.atomic.AtomicBoolean
 class JobProcessor(
     private val jobOutputManager: JobOutputManager,
     private val scraperManager: ScraperManager,
+    concurrentJobLimit: Int,
 ) {
     private val jobQueue = ConcurrentLinkedQueue<ScrapingJob>()
     private val isProcessing = AtomicBoolean(false)
     private val mutex = Mutex()
     private val workerScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val semaphore = Semaphore(concurrentJobLimit)
 
     init {
         startWorker()
@@ -60,7 +63,14 @@ class JobProcessor(
                     } ?: break
 
                 try {
-                    processJob(job)
+                    workerScope.launch {
+                        semaphore.acquire()
+                        try {
+                            processJob(job)
+                        } finally {
+                            semaphore.release()
+                        }
+                    }
                 } catch (e: Exception) {
                     println("Error processing job ${job.id}: ${e.message}")
                     e.printStackTrace()

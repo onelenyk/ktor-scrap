@@ -21,6 +21,10 @@ object EnvironmentManager {
 
         return DbCredentials(firestoreProjectId)
     }
+
+    fun getConcurrentJobLimit(): Int {
+        return envConfig.get("CONCURRENT_JOB_LIMIT")?.toInt() ?: 10
+    }
 }
 
 data class DbCredentials(
