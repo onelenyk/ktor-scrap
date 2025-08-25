@@ -2,6 +2,13 @@ package dev.onelenyk.ktorscrap.presentation.env
 
 import java.io.File
 
+object EnvKeys {
+    const val PORT = "PORT"
+    const val FIRESTORE_PROJECT_ID = "FIRESTORE_PROJECT_ID"
+    const val CONCURRENT_JOB_LIMIT = "CONCURRENT_JOB_LIMIT"
+    const val SERVICE_ACCOUNT_KEY = "SERVICE_ACCOUNT_KEY"
+}
+
 data class EnvConfig(val properties: Map<String, String>) {
     fun get(key: String): String? = properties[key]
 

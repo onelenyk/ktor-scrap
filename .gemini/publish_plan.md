@@ -67,7 +67,7 @@ services:
       - FIRESTORE_PROJECT_ID=your-firestore-project-id
       - CONCURRENT_JOB_LIMIT=10
       # This is a placeholder; you will paste the actual key in the CasaOS UI.
-      - GCP_SA_KEY=paste-your-service-account-key-json-here
+      - SERVICE_ACCOUNT_KEY=paste-your-base64-encoded-service-account-key-json-here
 
 # CasaOS App Store Configuration
 x-casaos:

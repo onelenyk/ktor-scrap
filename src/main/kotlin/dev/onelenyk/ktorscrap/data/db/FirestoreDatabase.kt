@@ -6,6 +6,8 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
 import dev.onelenyk.ktorscrap.presentation.env.DbCredentials
+import dev.onelenyk.ktorscrap.presentation.env.EnvironmentManager
+import java.io.ByteArrayInputStream
 
 class FirestoreDatabase(private val env: DbCredentials) {
     val db: Firestore by lazy {
@@ -14,7 +16,8 @@ class FirestoreDatabase(private val env: DbCredentials) {
     }
 
     private fun getServiceAccountKeyStream() =
-        java.io.FileInputStream("/app/service-account-key.json")
+        ByteArrayInputStream(EnvironmentManager.getGcpServiceAccountKey().toByteArray())
+
 
     private fun buildFirebaseOptions(credentials: GoogleCredentials): FirebaseOptions =
         FirebaseOptions.builder()
