@@ -1,39 +1,45 @@
-# Ktor Scraper
+# ✨ Ktor Scraper
 
-Ktor Scraper is a powerful and flexible web scraping application built with Kotlin and Ktor. It's designed to scrape job vacancy information from multiple sources, manage scraping tasks, and provide a user-friendly web interface for control and monitoring. The project is backed by Google Firestore for data storage and is architected for easy extension and maintenance.
+<p align="center">
+  <img src="https://www.lenyk.dev/assets/img/portfolio/ktor-scrap.png" alt="Ktor Scraper Dashboard" width="700">
+</p>
 
-## Features
+<p align="center">
+    <em>A powerful and elegant web scraping application built with Kotlin and Ktor.</em>
+    <br/><br/>
+    <a href="https://github.com/onelenyk/ktor-scrap/actions">
+        <img src="https://github.com/onelenyk/ktor-scrap/actions/workflows/docker-publish.yml/badge.svg" alt="CI/CD Status">
+    </a>
+    <a href="https://github.com/onelenyk/ktor-scrap/pkgs/container/ktor-scrap">
+        <img src="https://img.shields.io/badge/ghcr.io-onelenyk%2Fktor--scrap-blue?logo=github" alt="GHCR Image">
+    </a>
+</p>
 
--   **Multi-Source Scraping:** Easily extendable framework to add new scraping sources.
--   **Asynchronous Job Processing:** A robust queueing system manages and executes scraping tasks in the background.
--   **Firestore Backend:** All data, including job details and results, is stored in Google Firestore.
--   **Modern Web UI:** A responsive dashboard built with Bootstrap 5 allows you to:
-    -   View all scraping jobs, grouped by source.
-    -   See job statuses (PENDING, PROCESSING, COMPLETED, FAILED) with color-coded highlighting.
-    -   View formatted scraping results or the raw JSON.
-    -   Create custom scraping jobs.
-    -   Restart, or remove jobs.
-    -   Remove all jobs at once.
--   **REST API:** A clean API for programmatic control over the scraping jobs.
--   **Clean Architecture:** The codebase is organized into `data`, `domain`, and `presentation` layers, promoting separation of concerns and maintainability.
--   **Dependency Injection:** Koin is used for managing dependencies.
+---
 
-## Architecture
+**Ktor Scraper** is designed to scrape job vacancy information from multiple sources with ease. It features a robust asynchronous job processing system, a modern web UI, and a clean, maintainable architecture.
 
-The project follows the principles of Clean Architecture, separating the code into three main layers:
+## 🌟 Features
 
--   **`presentation`:** Handles all UI and API-related logic. This includes the Ktor server setup, routing, and the static web dashboard.
--   **`domain`:** Contains the core business logic and models of the application, such as the `JobQueueManager` and `Scraper` interfaces. It is completely independent of any framework or database.
--   **`data`:** Responsible for data sources. This layer includes the implementation of the repositories and the Firestore integration.
+-   **🧩 Multi-Source Scraping**: Easily extendable framework to add new scraping sources.
+-   **🚀 Asynchronous Job Processing**: A powerful queueing system manages and executes scraping tasks in the background.
+-   **🔥 Firestore Backend**: All data is stored securely in Google Firestore.
+-   **🎨 Modern Web UI**: A responsive dashboard built with Bootstrap 5 for easy control and monitoring.
+-   **🤖 REST API**: A clean API for programmatic control over scraping jobs.
+-   **🏗️ Clean Architecture**: Promotes separation of concerns and maintainability.
+-   **💉 Dependency Injection**: Koin is used for managing dependencies.
 
-## Getting Started
+## 🛠️ Getting Started
+
+Follow these steps to get the application running on your local machine.
 
 ### Prerequisites
 
--   Java 11 or higher
--   A Google Cloud Platform (GCP) project with Firestore enabled.
+-   **Java 21** or higher
+-   **Docker** and **Docker Compose**
+-   A **Google Cloud Platform (GCP)** project with **Firestore** enabled.
 
-### Setup
+### ⚙️ Setup
 
 1.  **Clone the repository:**
     ```sh
@@ -42,38 +48,62 @@ The project follows the principles of Clean Architecture, separating the code in
     ```
 
 2.  **Configure Firestore Credentials:**
-    -   Go to your GCP project's IAM & Admin -> Service Accounts.
-    -   Create a new service account with the "Cloud Datastore User" role.
-    -   Create a key for this service account (JSON format) and download it.
-    -   Place the downloaded JSON key file at `src/main/resources/service-account-key.json`.
+    -   Go to your GCP project's **IAM & Admin -> Service Accounts**.
+    -   Create a new service account with the **"Cloud Datastore User"** role.
+    -   Create a JSON key for this service account and download it.
 
 3.  **Set Environment Variables:**
-    The application requires one environment variable to be set:
-    -   `FIRESTORE_PROJECT_ID`: Your Google Cloud Platform project ID.
+    Create a `.env` file in the root of the project. Copy the contents of your downloaded service account JSON into the `SERVICE_ACCOUNT_KEY` variable.
 
-    You can set this in your IDE's run configuration or export it in your shell:
-    ```sh
-    export FIRESTORE_PROJECT_ID="your-gcp-project-id"
+    ```env
+    # .env file
+    FIRESTORE_PROJECT_ID=your-gcp-project-id
+    SERVICE_ACCOUNT_KEY='{"type": "service_account", "project_id": "...", ...}'
     ```
 
-### Running the Application
+### 🏃‍♀️ Running the Application
 
-You can run the application using the included Gradle wrapper:
+You can run the application locally in two ways:
 
-```sh
-./gradlew run
-```
+#### With Docker (Recommended)
 
-The server will start on port `8080` by default. You can access the web dashboard by navigating to `http://localhost:8080` in your browser.
+This is the easiest way to get started. It uses the pre-built image from the GitHub Container Registry.
 
-## Usage
+1.  **Ensure your `.env` file is configured correctly.**
+2.  **Start the application:**
+    ```sh
+    docker compose up -d
+    ```
 
-The web dashboard provides a simple and intuitive interface for managing the scraper.
+#### With Gradle
 
--   **Refresh List:** Updates the list of scraping jobs.
--   **Add Custom Job:** Opens a modal where you can define and start a new scraping job. You can use the dropdown to pre-fill the form with one of the default targets.
--   **Remove All Jobs:** Deletes all jobs from the database.
--   **Actions (per job):**
-    -   **View:** Opens a modal to see the scraped vacancies, with options to view as a formatted list or raw JSON.
-    -   **Restart:** Creates and starts a new job with the same source target.
-    -   **Remove:** Deletes the specific job.
+If you want to run the application without Docker:
+
+1.  **Place your service account key** at `src/main/resources/service-account-key.json`.
+2.  **Set the `FIRESTORE_PROJECT_ID`** environment variable in your shell.
+3.  **Run the application:**
+    ```sh
+    ./gradlew run
+    ```
+
+Once running, the web dashboard will be available at [http://localhost:8080](http://localhost:8080).
+
+---
+
+## 🚢 Publishing
+
+This project uses **GitHub Actions** to automatically build and publish the Docker image. For detailed instructions on the publishing process, versioning, and manual publishing, please see the [**Publishing Guide**](./PUBLISHING.md).
+
+---
+
+## 🕹️ Usage
+
+The web dashboard provides an intuitive interface for managing the scraper.
+
+-   **🔄 Refresh List**: Updates the list of scraping jobs.
+-   **➕ Add Custom Job**: Opens a modal to define and start a new scraping job.
+-   **🗑️ Remove All Jobs**: Deletes all jobs from the database.
+-   **🔍 Actions (per job)**:
+    -   **View**: See the scraped vacancies as a formatted list or raw JSON.
+    -   **Restart**: Reruns the scraping job.
+    -   **Remove**: Deletes the specific job.

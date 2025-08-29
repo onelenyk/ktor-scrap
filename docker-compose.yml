@@ -23,7 +23,7 @@ services:
     # IMPORTANT: This will pull the image built by your GitHub Action.
     # Replace 'your-github-username/your-repo-name' with your actual GitHub username and repository name.
     # For example: ghcr.io/onelenyk/ktor-scrap:latest
-    image: ghcr.io/your-github-username/your-repo-name:latest
+    image: ghcr.io/onelenyk/ktor-scrap:latest
     container_name: ktor-scrap
     restart: unless-stopped
     ports:
@@ -32,10 +32,12 @@ services:
       - "8080:8080"
     environment:
       # The port the Ktor application will run on inside the container.
-      - PORT=8080
-      # --- IMPORTANT: SET YOUR ENVIRONMENT VARIABLES BELOW ---
-      - FIRESTORE_PROJECT_ID=your-firestore-project-id
-      - CONCURRENT_JOB_LIMIT=10
+      - PORT
+    # --- IMPORTANT: SET YOUR ENVIRONMENT VARIABLES BELOW ---
+    # These variables should be set in your environment (e.g., in a .env file).
+      - FIRESTORE_PROJECT_ID
+      - SERVICE_ACCOUNT_KEY
+      - CONCURRENT_JOB_LIMIT
     healthcheck:
       # This uses the /live endpoint to ensure the application is healthy.
       test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:8080/live"]
