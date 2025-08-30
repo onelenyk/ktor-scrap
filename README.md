@@ -13,6 +13,9 @@
     <a href="https://github.com/onelenyk/ktor-scrap/pkgs/container/ktor-scrap">
         <img src="https://img.shields.io/badge/ghcr.io-onelenyk%2Fktor--scrap-blue?logo=github" alt="GHCR Image">
     </a>
+    <a href="https://github.com/onelenyk/ktor-scrap/releases">
+        <img src="https://img.shields.io/badge/version-0.0.1-blue" alt="Version">
+    </a>
 </p>
 
 ---
